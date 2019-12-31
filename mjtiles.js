@@ -37,6 +37,14 @@ class Tile {
         this.rank = rank
     }
 
+    isHonor() {
+        return this.suit === suits.DRAGONS || this.suit === suits.WINDS
+    }
+
+    isNumber() {
+        return !this.isHonor()
+    }
+
     toString() {
         switch (this.suit) {
         case suits.BAMS: return this.rank + "b"
@@ -125,9 +133,16 @@ function convStringToTile(str) {
 }
 
 
-module.exports.suits = suits
-module.exports.dragons = dragons
-module.exports.winds = winds
-module.exports.shuffle = shuffle
-module.exports.sorted = sorted
-module.exports.convStringToTile = convStringToTile
+function convStringToTiles(str) {
+    return str.split(' ').map((x) => convStringToTile(x))
+}
+
+
+exports.suits = suits
+exports.dragons = dragons
+exports.winds = winds
+exports.Tile = Tile
+exports.shuffle = shuffle
+exports.sorted = sorted
+exports.convStringToTile = convStringToTile
+exports.convStringToTiles = convStringToTiles
