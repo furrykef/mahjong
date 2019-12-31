@@ -1,3 +1,5 @@
+"use strict"
+
 const _ = require('lodash')
 const readlineSync = require('readline-sync')
 
@@ -12,19 +14,23 @@ function main() {
     }
     while (wall.length > 0) {
         hand = mjtiles.sorted(hand)
-        const new_tile = wall.pop()
-        console.log("Your hand is: %s | %s", handToString(hand), new_tile.toString())
-        hand.push(new_tile)
+        const drawn_tile = wall.pop()
+        console.log("Your hand is: %s | %s", handToString(hand), drawn_tile.toString())
+        hand.push(drawn_tile)
         console.log("\n%d tiles remain\n", wall.length)
         while (true) {
             let discard = readlineSync.question("What do you discard? ")
             if (discard === "exit" || discard === "quit") {
                 return
             }
-            discard = mjtiles.convStringToTile(discard)
-            if (!discard) {
-                console.log("That's not a valid tile!")
-                continue
+            if (discard) {
+                discard = mjtiles.convStringToTile(discard)
+                if (!discard) {
+                    console.log("That's not a valid tile!")
+                    continue
+                }
+            } else {
+                discard = drawn_tile
             }
             const index = _.findIndex(hand, discard)
             if (index === -1) {
