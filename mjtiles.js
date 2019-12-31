@@ -11,6 +11,12 @@ const suits = Object.freeze({
     WINDS: 5
 })
 
+const number_suits = Object.freeze({
+    BAMS: 1,
+    CRACKS: 2,
+    DOTS: 3
+})
+
 const dragons = Object.freeze({
     WHITE: 1,
     GREEN: 2,
@@ -64,17 +70,17 @@ class Tile {
 function shuffle() {
     let tiles = []
     for (let i = 0; i < 4; ++i) {
-        for (let suit = 1; suit <= 3; ++suit) {
+        Object.values(number_suits).forEach((suit) => {
             for (let rank = 1; rank <= 9; ++rank) {
                 tiles.push(new Tile(suit, rank))
             }
-        }
-        for (let dragon_type = 1; dragon_type <= 3; ++dragon_type) {
+        })
+        Object.values(dragons).forEach((dragon_type) => {
             tiles.push(new Tile(suits.DRAGONS, dragon_type))
-        }
-        for (let wind_type = 1; wind_type <= 4; ++wind_type) {
+        })
+        Object.values(winds).forEach((wind_type) =>  {
             tiles.push(new Tile(suits.WINDS, wind_type))
-        }
+        })
     }
     return _.shuffle(tiles)
 }
@@ -82,7 +88,7 @@ function shuffle() {
 
 function sorted(tiles) {
     let result = tiles.slice(0)
-    result.sort(function(a, b) {
+    result.sort((a, b) => {
         if (a.suit < b.suit) return -1
         if (a.suit > b.suit) return 1
         if (a.rank < b.rank) return -1
