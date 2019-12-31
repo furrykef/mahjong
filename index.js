@@ -64,6 +64,7 @@ function dealHand(wall, argv) {
         }
     }
     if (hand.length < 13) {
+        // Hand too short; add tiles from wall
         hand = hand.concat(wall.splice(0, 13 - hand.length))
     }
     return hand
