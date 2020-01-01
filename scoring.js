@@ -128,12 +128,12 @@ function extractRun(group) {
     const second = new mjtiles.Tile(first.suit, first.rank+1)
     const third = new mjtiles.Tile(first.suit, first.rank+2)
     group = group.slice(1)
-    const second_idx = _.findIndex(second)
+    const second_idx = _.findIndex(group, second)
     if (second_idx === -1) {
         return null
     }
     group.splice(second_idx, 1)
-    const third_idx = _.findIndex(third)
+    const third_idx = _.findIndex(group, third)
     if (third_idx === -1) {
         return null
     }

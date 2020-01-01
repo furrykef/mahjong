@@ -6,6 +6,11 @@ const mjtiles = require('../mjtiles')
 const scoring = require('../scoring')
 
 describe("Mahjong hand scoring", function() {
+    it("detects an incomplete hand", function() {
+        const hand = mjtiles.convStringToTiles("2b 9b 6c 8c 1d 2d 2d 3d Wh G R R S W")
+        const score = scoring.scoreHand(hand)
+        expect(score).to.equal(0)
+    })
     it("detects a basic complete hand", function() {
         const hand = mjtiles.convStringToTiles("3b 4b 5b 6b 6b 2c 2c 2c 7c 8c 9c 7d 8d 9d")
         const score = scoring.scoreHand(hand)
