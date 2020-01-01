@@ -17,10 +17,10 @@ function main(argv) {
         const drawn_tile = wall.pop()
         console.log("Your hand is: %s | %s", handToString(hand), drawn_tile.toString())
         hand.push(drawn_tile)
-        /*const score = scoring.scoreHand(hand) 
+        const score = scoring.scoreHand(hand) 
         if (score > 0) {
             console.log("You have a mahjong worth %d point(s)!", score)
-        }*/
+        }
         console.log("\n%d tiles remain\n", wall.length)
         while (true) {
             let discard = readlineSync.question("What do you discard? ")

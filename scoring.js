@@ -22,6 +22,7 @@ function scoreHand(hand) {
     for (const group of groups) {
         const group_result = handleGroup(group)
         if (!group_result) {
+            // Incomplete hand
             return 0
         }
         triplets += group_result.triplets
@@ -29,17 +30,19 @@ function scoreHand(hand) {
         pairs += group_result.pairs
     }
 
-    let score = 0
+    // Start with 5 for now since hand is always concealed
+    let score = 5
 
     if (pairs === 7) {
         // All pairs hand
         score += 30
     } else if (pairs !== 1 || triplets + runs !== 4) {
+        // Incomplete hand
         return 0
     }
 
-    // We have a valid hand. Return the score, or 1 for a chicken hand
-    return max(score, 1)
+    // We have a complete hand. Return the score, or 1 for a chicken hand
+    return Math.max(score, 1)
 }
 
 
@@ -109,7 +112,7 @@ function sumGroupResults(group1, group2) {
 // Assuming the group is sorted, counts the number of copies of the
 // first element in the group
 function countFirstElement(group) {
-    return _.takeWhile((x) => _.isEqual(x, group[0])).length
+    return _.takeWhile(group, (x) => _.isEqual(x, group[0])).length
 }
 
 
