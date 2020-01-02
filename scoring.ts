@@ -2,10 +2,10 @@
 
 const _ = require('lodash')
 
-const mjtiles = require('./mjtiles')
+import * as mjtiles from './mjtiles'
 
 
-const Yaku = Object.freeze({
+export const Yaku = Object.freeze({
     CHICKEN_HAND: {name: "Chicken Hand", value: 1},
     ALL_SEQUENCES: {name: "All Sequences", value: 5},
     CONCEALED_HAND: {name: "Concealed Hand", value: 5},
@@ -60,7 +60,7 @@ const Yaku = Object.freeze({
 // Returns:
 //  null if the hand is not complete
 //  a list of yaku otherwise (zero-length if chicken hand)
-function scoreHand(hand) {
+export function scoreHand(hand: mjtiles.Tile[]) {
     // @XXX@ This algorithm does not always handle ambiguous melds correctly.
     // @XXX@ No 13 Orphans
 
@@ -95,18 +95,18 @@ function scoreHand(hand) {
 }
 
 
-function hasYaku(yaku_list, what) {
-    return _.findIndex(yaku_list, (x) => x.name === what.name) !== -1
+export function hasYaku(yaku_list: any[], what: any) {
+    return _.findIndex(yaku_list, (x: any) => x.name === what.name) !== -1
 }
 
 
 // Group numbered tiles by suit; group honor tiles together
-function groupTiles(hand) {
+function groupTiles(hand: mjtiles.Tile[]) {
     hand = mjtiles.sorted(hand)
     return [
-        hand.filter((x) => x.suit === mjtiles.suits.BAMS),
-        hand.filter((x) => x.suit === mjtiles.suits.CRACKS),
-        hand.filter((x) => x.suit === mjtiles.suits.DOTS),
+        hand.filter((x) => x.suit === mjtiles.Suit.BAMS),
+        hand.filter((x) => x.suit === mjtiles.Suit.CRACKS),
+        hand.filter((x) => x.suit === mjtiles.Suit.DOTS),
         hand.filter((x) => x.isHonor())
     ].filter((arr) => arr.length > 0)
 }
@@ -114,7 +114,7 @@ function groupTiles(hand) {
 
 // @XXX@ forces only one interpretation of the group
 // Some groups are ambiguous, like 11123444 (is it 111 234 44, or 11 123 444?)
-function handleGroup(group) {
+function handleGroup(group: mjtiles.Tile[]): any {
     let result = {triplets: 0, runs: 0, pairs: 0}
     if (group.length === 0) {
         // Terminate recursion
@@ -125,7 +125,7 @@ function handleGroup(group) {
         // This might be a triplet (or triplet plus one, as in 111123),
         // but might not (as in 11123). So try it as a triplet first and
         // see what happens.
-        const sub_result = handleGroup(group.slice(3))
+        const sub_result: any = handleGroup(group.slice(3))
         if (sub_result) {
             // This works as a triplet
             ++result.triplets
@@ -134,7 +134,7 @@ function handleGroup(group) {
     }
     if (num_first >= 2) {
         // This might be a pair of eyes
-        const sub_result = handleGroup(group.slice(2))
+        const sub_result: any = handleGroup(group.slice(2))
         if (sub_result) {
             // This works as a pair of eyes
             ++result.pairs
@@ -142,16 +142,16 @@ function handleGroup(group) {
         }
     }
     // This must be the start of a run, or else the group is invalid
-    group = extractRun(group)
-    if (group) {
+    const group_minus_run = extractRun(group)
+    if (group_minus_run) {
         ++result.runs
-        return sumGroupResults(result, handleGroup(group))
+        return sumGroupResults(result, handleGroup(group_minus_run))
     }
     return null
 }
 
 
-function sumGroupResults(group1, group2) {
+function sumGroupResults(group1: any, group2: any) {
     if (!group1 || !group2) {
         return null
     }
@@ -165,15 +165,15 @@ function sumGroupResults(group1, group2) {
 
 // Assuming the group is sorted, counts the number of copies of the
 // first element in the group
-function countFirstElement(group) {
-    return _.takeWhile(group, (x) => _.isEqual(x, group[0])).length
+function countFirstElement(group: mjtiles.Tile[]) {
+    return _.takeWhile(group, (x: mjtiles.Tile[]) => _.isEqual(x, group[0])).length
 }
 
 
 // If the group starts with a run, returns the group minus the run
 // If the group does not start with a run, returns null
 // (Note that e.g. 12223 "starts with a run" for our purposes)
-function extractRun(group) {
+function extractRun(group: mjtiles.Tile[]) {
     const first = group[0]
     if (first.isHonor()) {
         // Can't have runs of honor tiles
@@ -194,8 +194,3 @@ function extractRun(group) {
     group.splice(third_idx, 1)
     return group
 }
-
-
-exports.Yaku = Yaku
-exports.scoreHand = scoreHand
-exports.hasYaku = hasYaku

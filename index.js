@@ -4,8 +4,8 @@ const _ = require('lodash')
 const readlineSync = require('readline-sync')
 const yargs = require('yargs')
 
-const mjtiles = require('./mjtiles')
-const scoring = require('./scoring')
+const mjtiles = require('./js/mjtiles')
+const scoring = require('./js/scoring')
 
 
 function main(argv) {

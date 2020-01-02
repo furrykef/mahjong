@@ -2,8 +2,8 @@
 
 const expect = require('chai').expect
 
-const mjtiles = require('../mjtiles')
-const scoring = require('../scoring')
+const mjtiles = require('../js/mjtiles')
+const scoring = require('../js/scoring')
 
 describe("Mahjong hand scoring", function() {
     it("detects an incomplete hand", function() {
