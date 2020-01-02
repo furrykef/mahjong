@@ -138,7 +138,7 @@ function sumGroupResults(group1: any, group2: any) {
 // Assuming the group is sorted, counts the number of copies of the
 // first element in the group
 function countFirstElement(group: mjtiles.Tile[]) {
-    return _.takeWhile(group, (x: mjtiles.Tile[]) => _.isEqual(x, group[0])).length
+    return _.takeWhile(group, (x: mjtiles.Tile) => _.isEqual(x, group[0])).length
 }
 
 
