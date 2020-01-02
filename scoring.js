@@ -5,11 +5,56 @@ const _ = require('lodash')
 const mjtiles = require('./mjtiles')
 
 
-const Yaku = {
+const Yaku = Object.freeze({
     CHICKEN_HAND: {name: "Chicken Hand", value: 1},
+    ALL_SEQUENCES: {name: "All Sequences", value: 5},
     CONCEALED_HAND: {name: "Concealed Hand", value: 5},
+    NO_TERMINALS: {name: "All Simples", value: 5},
+    MIXED_ONE_SUIT: {name: "Half Flush", value: 40},
+    PURE_ONE_SUIT: {name: "Full Flush", value: 80},
+    NINE_GATES: {name: "Nine Gates", value: 480},
+    VALUE_HONOR_WHITE: {name: "Triplet of Dragons (White)", value: 10},
+    VALUE_HONOR_GREEN: {name: "Triplet of Dragons (Green)", value: 10},
+    VALUE_HONOR_RED: {name: "Triplet of Dragons (Red)", value: 10},
+    VALUE_HONOR_SEAT: {name: "Triplet of Seat Wind", value: 10},
+    SMALL_THREE_DRAGONS: {name: "Small Three Dragons", value: 40},
+    BIG_THREE_DRAGONS: {name: "Big Three Dragons", value: 130},
+    SMALL_THREE_WINDS: {name: "Small Three Winds", value: 30},
+    BIG_THREE_WINDS: {name: "Big Three Winds", value: 120},
+    SMALL_FOUR_WINDS: {name: "Small Four Winds", value: 320},
+    BIG_FOUR_WINDS: {name: "Big Four Winds", value: 400},
+    ALL_HONORS: {name: "All Honors", value: 320},
+    ALL_TRIPLETS: {name: "All Triplets", value: 30},
+    TWO_CONCEALED_TRIPLETS: {name: "Two Concealed Triplets", value: 5},
+    THREE_CONCEALED_TRIPLETS: {name: "Three Concealed Triplets", value: 30},
+    FOUR_CONCEALED_TRIPLETS: {name: "Four Concealed Triplets", value: 125},
+    ONE_KONG: {name: "One Kong", value: 5},
+    TWO_KONG: {name: "Two Kongs", value: 20},
+    THREE_KONG: {name: "Three Kongs", value: 120},
+    FOUR_KONG: {name: "Four Kongs", value: 480},
+    TWO_IDENTICAL_SEQUENCES: {name: "Two Identical Sequences", value: 10},
+    TWO_IDENTICAL_SEQUENCES_TWICE: {name: "Two Identical Sequences Twice", value: 60},
+    THREE_IDENTICAL_SEQUENCES: {name: "Three Identical Sequences", value: 120},
+    FOUR_IDENTICAL_SEQUENCES: {name: "Four Identical Sequences", value: 480},
+    THREE_SIMILAR_SEQUENCES: {name: "Three Similar Sequences", value: 35},
+    SMALL_THREE_SIMILAR_TRIPLETS: {name: "Small Three Similar Triplets", value: 30},
+    THREE_SIMILAR_TRIPLETS: {name: "Three Similar Triplets", value: 120},
+    NINE_TILE_STRAIGHT: {name: "Nine-Tile Straight", value: 40},
+    THREE_CONSECUTIVE_TRIPLETS: {name: "Three Consecutive Triplets", value: 100},
+    FOUR_CONSECUTIVE_TRIPLETS: {name: "Four Consecutive Triplets", value: 200},
+    MIXED_LESSER_TERMINALS: {name: "Mixed Lesser Terminals", value: 40},
+    PURE_LESSER_TERMINALS: {name: "Pure Lesser Terminals", value: 50},
+    MIXED_GREATER_TERMINALS: {name: "Mixed Greater Terminals", value: 100},
+    PURE_GREATER_TERMINALS: {name: "Pure Greater Terminals", value: 400},
+    FINAL_DRAW: {name: "Final Draw", value: 10},
+    FINAL_DISCARD: {name: "Final Discard", value: 10},
+    WIN_ON_KONG: {name: "Win on Kong", value: 10},
+    ROBBING_A_KONG: {name: "Robbing a Kong", value: 10},
+    BLESSING_OF_HEAVEN: {name: "Blessing of Heaven", value: 155},
+    BLESSING_OF_EARTH: {name: "Blessing of Earth", value: 155},
+    THIRTEEN_TERMINALS: {name: "Thirteen Orphans", value: 160},
     SEVEN_PAIRS: {name: "Seven Pairs", value: 30}
-}
+})
 
 
 // Returns:
