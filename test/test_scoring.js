@@ -16,6 +16,11 @@ describe("Mahjong hand scoring", function() {
         const yaku_list = scoring.scoreHand(hand)
         expect(yaku_list).to.not.be.null
     })
+    it("detects a complete but scrambled hand", function() {
+        const hand = mjtiles.convStringToTiles("2c 8d 35b 2c 6b 278c 79d 9c 46b")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(yaku_list).to.not.be.null
+    })
     it("detects seven pairs", function() {
         const hand = mjtiles.convStringToTiles("11b 33b 55b 77b 99b 11c 33c")
         const yaku_list = scoring.scoreHand(hand)
