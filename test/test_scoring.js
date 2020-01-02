@@ -21,4 +21,14 @@ describe("Mahjong hand scoring", function() {
         const yaku_list = scoring.scoreHand(hand)
         expect(scoring.hasYaku(yaku_list, scoring.Yaku.SEVEN_PAIRS)).to.be.true
     })
+    it("does not allow runs of dragons", function() {
+        const hand = mjtiles.convStringToTiles("3b 4b 5b 6b 6b 2c 2c 2c 7c 8c 9c Wh G R")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(yaku_list).to.be.null
+    })
+    it("does not allow runs of winds", function() {
+        const hand = mjtiles.convStringToTiles("3b 4b 5b 6b 6b 2c 2c 2c 7c 8c 9c E S W")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(yaku_list).to.be.null
+    })
 })
