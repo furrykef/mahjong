@@ -1,6 +1,7 @@
-const _ = require('lodash')
 const readlineSync = require('readline-sync')
 const yargs = require('yargs')
+
+import * as _ from 'lodash'
 
 import * as mjtiles from './mjtiles'
 import * as scoring from './scoring'
@@ -12,7 +13,7 @@ export function main(argv: string[]) {
     let hand = dealHand(wall, argv)
     while (wall.length > 0) {
         hand = mjtiles.sorted(hand)
-        const drawn_tile = wall.pop()
+        const drawn_tile: any = wall.pop()
         console.log("Your hand is: %s | %s", handToString(hand), drawn_tile.toString())
         hand.push(drawn_tile)
         const yaku_list = scoring.scoreHand(hand) 
@@ -58,7 +59,7 @@ function dealHand(wall: mjtiles.Tile[], argv: any) {
         }
         // Remove corresponding tiles from wall
         for (const tile of hand) {
-            let idx = _.findIndex(wall, (x: mjtiles.Tile) => _.isEqual(x, tile))
+            let idx = _.findIndex(wall, (x) => _.isEqual(x, tile))
             wall.splice(idx, 1)
         }
     }

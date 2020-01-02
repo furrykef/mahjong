@@ -1,4 +1,4 @@
-const _ = require('lodash')
+import * as _ from 'lodash'
 
 import * as mjtiles from './mjtiles'
 
@@ -80,14 +80,21 @@ export function scoreHand(hand: mjtiles.Tile[]) {
 
 
 export function hasYaku(yaku_list: any[], what: any) {
-    return _.findIndex(yaku_list, (x: any) => x.name === what.name) !== -1
+    return _.findIndex(yaku_list, (x) => x.name === what.name) !== -1
+}
+
+
+class GroupResult {
+    triplets = 0
+    runs = 0
+    pairs = 0
 }
 
 
 // @XXX@ forces only one interpretation of the group
 // Some groups are ambiguous, like 11123444 (is it 111 234 44, or 11 123 444?)
-function handleGroup(group: mjtiles.Tile[]): any {
-    let result = {triplets: 0, runs: 0, pairs: 0}
+function handleGroup(group: mjtiles.Tile[]): GroupResult | null {
+    let result = new GroupResult()
     if (group.length === 0) {
         // Terminate recursion
         return result
@@ -97,7 +104,7 @@ function handleGroup(group: mjtiles.Tile[]): any {
         // This might be a triplet (or triplet plus one, as in 111123),
         // but might not (as in 11123). So try it as a triplet first and
         // see what happens.
-        const sub_result: any = handleGroup(group.slice(3))
+        const sub_result = handleGroup(group.slice(3))
         if (sub_result) {
             // This works as a triplet
             ++result.triplets
@@ -106,7 +113,7 @@ function handleGroup(group: mjtiles.Tile[]): any {
     }
     if (num_first >= 2) {
         // This might be a pair of eyes
-        const sub_result: any = handleGroup(group.slice(2))
+        const sub_result = handleGroup(group.slice(2))
         if (sub_result) {
             // This works as a pair of eyes
             ++result.pairs
@@ -123,7 +130,7 @@ function handleGroup(group: mjtiles.Tile[]): any {
 }
 
 
-function sumGroupResults(group1: any, group2: any) {
+function sumGroupResults(group1: GroupResult | null, group2: GroupResult | null) {
     if (!group1 || !group2) {
         return null
     }
@@ -138,7 +145,7 @@ function sumGroupResults(group1: any, group2: any) {
 // Assuming the group is sorted, counts the number of copies of the
 // first element in the group
 function countFirstElement(group: mjtiles.Tile[]) {
-    return _.takeWhile(group, (x: mjtiles.Tile) => _.isEqual(x, group[0])).length
+    return _.takeWhile(group, (x) => _.isEqual(x, group[0])).length
 }
 
 
