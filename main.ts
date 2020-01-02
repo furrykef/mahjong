@@ -72,18 +72,11 @@ function dealHand(wall: mjtiles.Tile[], argv: any) {
 
 
 function handToString(hand: mjtiles.Tile[]) {
-    let result = ""
-    for (let i = 0; i < hand.length; ++i) {
-        result += hand[i].toString()
-        if (i !== hand.length - 1) {
-            result += " "
-        }
-    }
-    return result
+    return hand.join(" ")
 }
 
 
-function printYaku(yaku_list: any[]) {
+function printYaku(yaku_list: scoring.Yaku[]) {
     let total = 0
     for (const yaku of yaku_list) {
         console.log("%s: %d", yaku.name, yaku.value)

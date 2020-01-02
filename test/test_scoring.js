@@ -24,7 +24,7 @@ describe("Mahjong hand scoring", function() {
     it("detects seven pairs", function() {
         const hand = mjtiles.convStringToTiles("11b 33b 55b 77b 99b 11c 33c")
         const yaku_list = scoring.scoreHand(hand)
-        expect(scoring.hasYaku(yaku_list, scoring.Yaku.SEVEN_PAIRS)).to.be.true
+        expect(scoring.hasYaku(yaku_list, scoring.YakuType.SEVEN_PAIRS)).to.be.true
     })
     it("does not allow runs of dragons", function() {
         const hand = mjtiles.convStringToTiles("345b 66b 222c 789c HGR")

@@ -3,7 +3,12 @@ import * as _ from 'lodash'
 import * as mjtiles from './mjtiles'
 
 
-export const Yaku = Object.freeze({
+export interface Yaku {
+    readonly name: string
+    readonly value: number
+}
+
+export const YakuType = Object.freeze({
     CHICKEN_HAND: {name: "Chicken Hand", value: 1},
     ALL_SEQUENCES: {name: "All Sequences", value: 5},
     CONCEALED_HAND: {name: "Concealed Hand", value: 5},
@@ -67,10 +72,10 @@ export function scoreHand(hand: mjtiles.Tile[]) {
         // Incomplete hand
         return null
     }
-    let yaku_list = [Yaku.CONCEALED_HAND]
+    let yaku_list = [YakuType.CONCEALED_HAND]
     if (group_result.pairs === 7) {
         // Seven-pair hand
-        yaku_list.push(Yaku.SEVEN_PAIRS)
+        yaku_list.push(YakuType.SEVEN_PAIRS)
     } else if (group_result.pairs !== 1
                || group_result.triplets + group_result.runs !== 4) {
         // Incomplete hand
@@ -80,7 +85,7 @@ export function scoreHand(hand: mjtiles.Tile[]) {
 }
 
 
-export function hasYaku(yaku_list: any[], what: any) {
+export function hasYaku(yaku_list: Yaku[], what: Yaku) {
     return _.findIndex(yaku_list, (x) => x.name === what.name) !== -1
 }
 
