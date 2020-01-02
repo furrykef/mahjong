@@ -61,52 +61,26 @@ export const Yaku = Object.freeze({
 export function scoreHand(hand: mjtiles.Tile[]) {
     // @XXX@ This algorithm does not always handle ambiguous melds correctly.
     // @XXX@ No 13 Orphans
-
-    const groups = groupTiles(hand)
-
-    let triplets = 0
-    let runs = 0
-    let pairs = 0
-
-    for (const group of groups) {
-        const group_result = handleGroup(group)
-        if (!group_result) {
-            // Incomplete hand
-            return null
-        }
-        triplets += group_result.triplets
-        runs += group_result.runs
-        pairs += group_result.pairs
-    }
-
-    let yaku_list = [Yaku.CONCEALED_HAND]
-
-    if (pairs === 7) {
-        // Seven-pair hand
-        yaku_list.push(Yaku.SEVEN_PAIRS)
-    } else if (pairs !== 1 || triplets + runs !== 4) {
+    const group_result = handleGroup(hand)
+    if (!group_result) {
         // Incomplete hand
         return null
     }
-
+    let yaku_list = [Yaku.CONCEALED_HAND]
+    if (group_result.pairs === 7) {
+        // Seven-pair hand
+        yaku_list.push(Yaku.SEVEN_PAIRS)
+    } else if (group_result.pairs !== 1
+               || group_result.triplets + group_result.runs !== 4) {
+        // Incomplete hand
+        return null
+    }
     return yaku_list
 }
 
 
 export function hasYaku(yaku_list: any[], what: any) {
     return _.findIndex(yaku_list, (x: any) => x.name === what.name) !== -1
-}
-
-
-// Group numbered tiles by suit; group honor tiles together
-function groupTiles(hand: mjtiles.Tile[]) {
-    hand = mjtiles.sorted(hand)
-    return [
-        hand.filter((x) => x.suit === mjtiles.Suit.BAMS),
-        hand.filter((x) => x.suit === mjtiles.Suit.CRACKS),
-        hand.filter((x) => x.suit === mjtiles.Suit.DOTS),
-        hand.filter((x) => x.isHonor())
-    ].filter((arr) => arr.length > 0)
 }
 
 
