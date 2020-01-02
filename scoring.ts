@@ -61,6 +61,7 @@ export const Yaku = Object.freeze({
 export function scoreHand(hand: mjtiles.Tile[]) {
     // @XXX@ This algorithm does not always handle ambiguous melds correctly.
     // @XXX@ No 13 Orphans
+    hand = mjtiles.sorted(hand)
     const group_result = handleGroup(hand)
     if (!group_result) {
         // Incomplete hand

@@ -16,7 +16,7 @@ export function main(argv: string[]) {
         const drawn_tile: any = wall.pop()
         console.log("Your hand is: %s | %s", handToString(hand), drawn_tile.toString())
         hand.push(drawn_tile)
-        const yaku_list = scoring.scoreHand(hand) 
+        const yaku_list = scoring.scoreHand(hand)
         if (yaku_list) {
             console.log("You have a mahjong!")
             printYaku(yaku_list)

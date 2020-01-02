@@ -48,7 +48,7 @@ export class Tile {
 
         case Suit.DRAGONS:
             switch (this.rank) {
-            case Dragon.WHITE: return "Wh"
+            case Dragon.WHITE: return "H"
             case Dragon.GREEN: return "G"
             case Dragon.RED: return "R"
             default: return "[bad dragon]"
@@ -103,31 +103,43 @@ export function sorted(tiles: Tile[]) {
 
 
 export function convStringToTile(str: string) {
-    switch (str) {
-    case "Wh": return new Tile(Suit.DRAGONS, Dragon.WHITE)
-    case "G": return new Tile(Suit.DRAGONS, Dragon.GREEN)
-    case "R": return new Tile(Suit.DRAGONS, Dragon.RED)
-    case "E": return new Tile(Suit.WINDS, Wind.EAST)
-    case "S": return new Tile(Suit.WINDS, Wind.SOUTH)
-    case "W": return new Tile(Suit.WINDS, Wind.WEST)
-    case "N": return new Tile(Suit.WINDS, Wind.NORTH)
-    default:
-        const match = /([1-9])([bcd])/.exec(str)
-        if (!match) {
-            return null
-        }
-        const rank = parseInt(match[1])
-        let suit = Suit.BAMS
-        switch (match[2]) {
-        case "b": suit = Suit.BAMS; break
-        case "c": suit = Suit.CRACKS; break
-        case "d": suit = Suit.DOTS; break
-        }
-        return new Tile(suit, rank)
-    }
+    return convStringToTiles(str)[0]
 }
 
 
 export function convStringToTiles(str: string) {
-    return str.split(' ').map((x) => convStringToTile(x))
+    let result: Tile[] = []
+    for (const group of str.split(' ')) {
+        const match = /([1-9]+)([bcd])/.exec(group)
+        if (match) {
+            // This is something like 123444b
+            // In other words, a group of number tiles
+            const ranks = match[1]
+            let suit = Suit.BAMS
+            switch (match[2]) {
+            case "b": suit = Suit.BAMS; break
+            case "c": suit = Suit.CRACKS; break
+            case "d": suit = Suit.DOTS; break
+            }
+            for (const rank of ranks) {
+                result.push(new Tile(suit, parseInt(rank)))
+            }
+        } else {
+            // Hopefully, it's a list of honor tiles
+            for (const type of group) {
+                switch (type) {
+                case "H": result.push(new Tile(Suit.DRAGONS, Dragon.WHITE)); break
+                case "G": result.push(new Tile(Suit.DRAGONS, Dragon.GREEN)); break
+                case "R": result.push(new Tile(Suit.DRAGONS, Dragon.RED)); break
+                case "E": result.push(new Tile(Suit.WINDS, Wind.EAST)); break
+                case "S": result.push(new Tile(Suit.WINDS, Wind.SOUTH)); break
+                case "W": result.push(new Tile(Suit.WINDS, Wind.WEST)); break
+                case "N": result.push(new Tile(Suit.WINDS, Wind.NORTH)); break
+                default:
+                    // @XXX@ need to raise an error!
+                }
+            }
+        }
+    }
+    return result
 }
