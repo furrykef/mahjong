@@ -17,9 +17,10 @@ function main(argv) {
         const drawn_tile = wall.pop()
         console.log("Your hand is: %s | %s", handToString(hand), drawn_tile.toString())
         hand.push(drawn_tile)
-        const score = scoring.scoreHand(hand) 
-        if (score > 0) {
-            console.log("You have a mahjong worth %d point(s)!", score)
+        const yaku_list = scoring.scoreHand(hand) 
+        if (yaku_list) {
+            console.log("You have a mahjong!")
+            printYaku(yaku_list)
         }
         console.log("\n%d tiles remain\n", wall.length)
         while (true) {
@@ -80,6 +81,16 @@ function handToString(hand) {
         }
     }
     return result
+}
+
+
+function printYaku(yaku_list) {
+    let total = 0
+    for (const yaku of yaku_list) {
+        console.log("%s: %d", yaku.name, yaku.value)
+        total += yaku.value
+    }
+    console.log("\nTotal: %d point(s)", total)
 }
 
 

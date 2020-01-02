@@ -5,10 +5,16 @@ const _ = require('lodash')
 const mjtiles = require('./mjtiles')
 
 
+const Yaku = {
+    CHICKEN_HAND: {name: "Chicken Hand", value: 1},
+    CONCEALED_HAND: {name: "Concealed Hand", value: 5},
+    SEVEN_PAIRS: {name: "Seven Pairs", value: 30}
+}
+
+
 // Returns:
-//  0 if the hand is not complete
-//  1 if it's a chicken hand
-//  the sum of the value of the yaku otherwise
+//  null if the hand is not complete
+//  a list of yaku otherwise (zero-length if chicken hand)
 function scoreHand(hand) {
     // @XXX@ This algorithm does not always handle ambiguous melds correctly.
     // @XXX@ No 13 Orphans
@@ -23,26 +29,29 @@ function scoreHand(hand) {
         const group_result = handleGroup(group)
         if (!group_result) {
             // Incomplete hand
-            return 0
+            return null
         }
         triplets += group_result.triplets
         runs += group_result.runs
         pairs += group_result.pairs
     }
 
-    // Start with 5 for now since hand is always concealed
-    let score = 5
+    let yaku_list = [Yaku.CONCEALED_HAND]
 
     if (pairs === 7) {
-        // All pairs hand
-        score += 30
+        // Seven-pair hand
+        yaku_list.push(Yaku.SEVEN_PAIRS)
     } else if (pairs !== 1 || triplets + runs !== 4) {
         // Incomplete hand
-        return 0
+        return null
     }
 
-    // We have a complete hand. Return the score, or 1 for a chicken hand
-    return Math.max(score, 1)
+    return yaku_list
+}
+
+
+function hasYaku(yaku_list, what) {
+    return _.findIndex(yaku_list, (x) => x.name === what.name) !== -1
 }
 
 
@@ -142,4 +151,6 @@ function extractRun(group) {
 }
 
 
+exports.Yaku = Yaku
 exports.scoreHand = scoreHand
+exports.hasYaku = hasYaku
