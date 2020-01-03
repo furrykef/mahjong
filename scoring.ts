@@ -71,7 +71,7 @@ export function scoreHand(hand: mjtiles.Tile[]) {
     if (_.isEqual(_.uniqWith(hand, _.isEqual), ORPHANS_PATTERN)) {
         return [YakuType.THIRTEEN_TERMINALS, YakuType.CONCEALED_HAND]
     }
-    return scoreHandImpl(hand, [])
+    return simplifyYaku(scoreHandImpl(hand, []))
 }
 
 
@@ -89,6 +89,19 @@ export function hasYaku(yaku_list: Yaku[], what: Yaku) {
 export function compareYaku(yaku_list1: Yaku[], yaku_list2: Yaku[]) {
     return _.isEqual(_.sortBy(yaku_list1, ['name']),
                      _.sortBy(yaku_list2, ['name']))
+}
+
+
+// If the list contains limit yaku, return only the highest limit yaku.
+// Otherwise, return the yaku list unchanged (except possibly for ordering).
+function simplifyYaku(yaku_list: Yaku[] | null) {
+    if (yaku_list && yaku_list.length > 0) {
+        yaku_list = _.orderBy(yaku_list, ['value'], ['desc'])
+        if (yaku_list[0].value >= 320) {
+            return [yaku_list[0]]
+        }
+    }
+    return yaku_list
 }
 
 
@@ -195,12 +208,10 @@ function scoreSets(sets: mjtiles.Tile[][]) {
             yaku_list.push(YakuType.SMALL_THREE_DRAGONS)
         }
         if (wind_triplets === 4) {
-            // Limit hand
-            return [YakuType.BIG_FOUR_WINDS]
+            yaku_list.push(YakuType.BIG_FOUR_WINDS)
         } else if (wind_triplets === 3) {
             if (wind_pair) {
-                // Limit hand
-                return [YakuType.SMALL_FOUR_WINDS]
+                yaku_list.push(YakuType.SMALL_FOUR_WINDS)
             } else {
                 yaku_list.push(YakuType.BIG_THREE_WINDS)
             }
