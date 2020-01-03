@@ -159,6 +159,18 @@ describe("3.0 Honor Tiles", function() {
             )
         ).to.be.true
     })
+    it("rejects 3.2.1 Small Three Dragons with no dragon pair", function() {
+        const hand = mjtiles.convStringToTiles("123b 456c HHH GGG EE")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.VALUE_HONOR_WHITE,
+                 scoring.YakuType.VALUE_HONOR_GREEN]
+            )
+        ).to.be.true
+    })
 
     it("detects 3.2.2 Big Three Dragons", function() {
         const hand = mjtiles.convStringToTiles("123b HHH GGG RRR EE")
@@ -174,6 +186,40 @@ describe("3.0 Honor Tiles", function() {
             )
         ).to.be.true
     })
+
+    it("detects 3.3.1 Small Three Winds", function() {
+        const hand = mjtiles.convStringToTiles("123b 456c EEE SSS WW")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.SMALL_THREE_WINDS]
+            )
+        ).to.be.true
+    })
+    it("rejects 3.3.1 Small Three Winds with no wind pair", function() {
+        const hand = mjtiles.convStringToTiles("123b 456c EEE SSS HH")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND]
+            )
+        ).to.be.true
+    })
+    it("detects 3.3.2 Big Three Winds", function() {
+        const hand = mjtiles.convStringToTiles("123b EEE SSS WWW HH")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.BIG_THREE_WINDS]
+            )
+        ).to.be.true
+    })
+
 })
 
 describe("4.0 Triplets and Kong", function() {

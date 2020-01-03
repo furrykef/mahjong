@@ -154,6 +154,8 @@ function scoreSets(sets: mjtiles.Tile[][]) {
     let pairs = 0
     let dragon_triplets = 0
     let dragon_pair = false
+    let wind_triplets = 0
+    let wind_pair = false
     for (const set of sets) {
         if (set.length === 4 || (set.length === 3 && set[0].equals(set[1]))) {
             ++triplets
@@ -165,6 +167,8 @@ function scoreSets(sets: mjtiles.Tile[][]) {
                     case mjtiles.Dragon.RED: yaku_list.push(YakuType.VALUE_HONOR_RED); break
                     default: throw Error("Impossible honor tile in scoreSets")
                 }
+            } else if (set[0].suit === mjtiles.Suit.WINDS) {
+                ++wind_triplets
             }
         } else if (set.length === 3) {
             ++runs
@@ -172,6 +176,8 @@ function scoreSets(sets: mjtiles.Tile[][]) {
             ++pairs
             if (set[0].suit === mjtiles.Suit.DRAGONS) {
                 dragon_pair = true
+            } else if (set[0].suit === mjtiles.Suit.WINDS) {
+                wind_pair = true
             }
         } else {
             throw new Error("Invalid set in scoreSets")
@@ -187,6 +193,11 @@ function scoreSets(sets: mjtiles.Tile[][]) {
             yaku_list.push(YakuType.BIG_THREE_DRAGONS)
         } else if (dragon_triplets === 2 && dragon_pair) {
             yaku_list.push(YakuType.SMALL_THREE_DRAGONS)
+        }
+        if (wind_triplets === 3) {
+            yaku_list.push(YakuType.BIG_THREE_WINDS)
+        } else if (wind_triplets === 2 && wind_pair) {
+            yaku_list.push(YakuType.SMALL_THREE_WINDS)
         }
         if (runs === 4) {
             yaku_list.push(YakuType.ALL_SEQUENCES)
