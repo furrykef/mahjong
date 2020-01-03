@@ -147,15 +147,18 @@ function scoreSets(sets: mjtiles.Tile[][]) {
     let runs = 0
     let pairs = 0
     for (const set of sets) {
-        if (set.length === 4) {
-            // Kong
+        if (set.length === 4 || (set.length === 3 && set[0].equals(set[1]))) {
             ++triplets
-        } else if (set.length === 3) {
-            if (set[0].equals(set[1])) {
-                ++triplets
-            } else {
-                ++runs
+            if (set[0].suit === mjtiles.Suit.DRAGONS) {
+                switch (set[0].rank) {
+                    case mjtiles.Dragon.WHITE: yaku_list.push(YakuType.VALUE_HONOR_WHITE); break
+                    case mjtiles.Dragon.GREEN: yaku_list.push(YakuType.VALUE_HONOR_GREEN); break
+                    case mjtiles.Dragon.RED: yaku_list.push(YakuType.VALUE_HONOR_RED); break
+                    default: throw Error("Impossible honor tile in scoreSets")
+                }
             }
+        } else if (set.length === 3) {
+            ++runs
         } else if (set.length === 2) {
             ++pairs
         } else {

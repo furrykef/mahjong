@@ -41,6 +41,54 @@ describe("Basic hand scoring", function() {
     })
 })
 
+describe("3.0 Honor Tiles", function() {
+    it("detects 3.1 Value Honor (White Dragon)", function() {
+        const hand = mjtiles.convStringToTiles("123b 456c 789d HHH EE")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.VALUE_HONOR_WHITE]
+            )
+        ).to.be.true
+    })
+    it("detects 3.1 Value Honor (Green Dragon)", function() {
+        const hand = mjtiles.convStringToTiles("123b 456c 789d GGG EE")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.VALUE_HONOR_GREEN]
+            )
+        ).to.be.true
+    })
+    it("detects 3.1 Value Honor (Red Dragon)", function() {
+        const hand = mjtiles.convStringToTiles("123b 456c 789d RRR EE")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.VALUE_HONOR_RED]
+            )
+        ).to.be.true
+    })
+    it("detects 3.1 Value Honor (Seat Wind)", function() {
+        // @XXX@ how to specify which wind is the seat wind?
+        const hand = mjtiles.convStringToTiles("123b 456c 789d EEE HH")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.VALUE_HONOR_SEAT]
+            )
+        ).to.be.true
+    })
+})
+
 describe("4.0 Triplets and Kong", function() {
     it("detects 4.1 All Triplets", function() {
         const hand = mjtiles.convStringToTiles("111333555777b HH")
