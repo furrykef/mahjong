@@ -1,9 +1,7 @@
-"use strict"
+import { expect } from 'chai'
 
-const expect = require('chai').expect
-
-const mjtiles = require('../js/mjtiles')
-const scoring = require('../js/scoring')
+import * as mjtiles from  '../mjtiles'
+import * as scoring from  '../scoring'
 
 describe("Mahjong hand scoring", function() {
     it("detects an incomplete hand", function() {
@@ -23,7 +21,7 @@ describe("Mahjong hand scoring", function() {
     })
     it("detects seven pairs", function() {
         const hand = mjtiles.convStringToTiles("11b 33b 55b 77b 99b 11c 33c")
-        const yaku_list = scoring.scoreHand(hand)
+        const yaku_list: any = scoring.scoreHand(hand)
         expect(scoring.hasYaku(yaku_list, scoring.YakuType.SEVEN_PAIRS)).to.be.true
     })
     it("does not allow runs of dragons", function() {
