@@ -8,6 +8,7 @@ export interface Yaku {
     readonly value: number
 }
 
+// NB: Every yaku's name must be unique.
 export const YakuType = Object.freeze({
     CHICKEN_HAND: {name: "Chicken Hand", value: 1},
     ALL_SEQUENCES: {name: "All Sequences", value: 5},
@@ -150,7 +151,7 @@ function scoreSets(sets: mjtiles.Tile[][]) {
             // Kong
             ++triplets
         } else if (set.length === 3) {
-            if (set[0] === set[1]) {
+            if (set[0].equals(set[1])) {
                 ++triplets
             } else {
                 ++runs
@@ -161,10 +162,15 @@ function scoreSets(sets: mjtiles.Tile[][]) {
             throw new Error("Invalid set in scoreSets")
         }
     }
-    if (pairs === 7) {
-        // Seven-pair hand
+
+    if (triplets + runs === 4 && pairs === 1) {
+        // Regular hand
+        if (triplets === 4) {
+            yaku_list.push(YakuType.ALL_TRIPLETS)
+        }
+    } else if (pairs === 7) {
         yaku_list.push(YakuType.SEVEN_PAIRS)
-    } else if (pairs !== 1 || triplets + runs !== 4) {
+    } else {
         // Incomplete hand
         return null
     }

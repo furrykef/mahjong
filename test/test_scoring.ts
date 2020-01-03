@@ -21,8 +21,8 @@ describe("Basic hand scoring", function() {
     })
     it("detects seven pairs", function() {
         const hand = mjtiles.convStringToTiles("11b 33b 55b 77b 99b 11c 33c")
-        const yaku_list: any = scoring.scoreHand(hand)
-        expect(scoring.hasYaku(yaku_list, scoring.YakuType.SEVEN_PAIRS)).to.be.true
+        const yaku_list = scoring.scoreHand(hand)
+        expect(scoring.hasYaku(yaku_list!, scoring.YakuType.SEVEN_PAIRS)).to.be.true
     })
     it("does not allow runs of dragons", function() {
         const hand = mjtiles.convStringToTiles("345b 66b 222c 789c HGR")
@@ -41,15 +41,52 @@ describe("Basic hand scoring", function() {
     })
 })
 
-describe("Pattern-based yaku", function() {
-    it("detects Thirteen Orphans", function() {
-        const hand = mjtiles.convStringToTiles("19b 19c 19d ESWN HGRR")
-        const yaku_list = scoring.scoreHand(hand)!
+describe("4.0 Triplets and Kong", function() {
+    it("detects 4.1 All Triplets", function() {
+        const hand = mjtiles.convStringToTiles("111333555777b HH")
+        const yaku_list = scoring.scoreHand(hand)
         expect(
             scoring.compareYaku(
-                yaku_list,
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.ALL_TRIPLETS]
+            )
+        ).to.be.true
+    })
+})
+
+describe("10.0 Irregular Hands", function() {
+    it("detects 10.1 Thirteen Terminals", function() {
+        const hand = mjtiles.convStringToTiles("19b 19c 19d ESWN HGRR")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
                 [scoring.YakuType.CONCEALED_HAND,
                  scoring.YakuType.THIRTEEN_TERMINALS]
+            )
+        ).to.be.true
+    })
+
+    it("detects 10.2 Seven Pairs", function() {
+        const hand = mjtiles.convStringToTiles("11b 33b 55b 77b 99b 11c 33c")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.SEVEN_PAIRS]
+            )
+        ).to.be.true
+    })
+    it("detects 10.2 Seven Pairs (four of a kind)", function() {
+        const hand = mjtiles.convStringToTiles("11b 33b 55b 77b 99b 1111c")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.SEVEN_PAIRS]
             )
         ).to.be.true
     })
