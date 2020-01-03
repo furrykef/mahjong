@@ -87,6 +87,35 @@ describe("3.0 Honor Tiles", function() {
             )
         ).to.be.true
     })
+
+    it("detects 3.2.1 Small Three Dragons", function() {
+        const hand = mjtiles.convStringToTiles("123b 456c HHH GGG RR")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.SMALL_THREE_DRAGONS,
+                 scoring.YakuType.VALUE_HONOR_WHITE,
+                 scoring.YakuType.VALUE_HONOR_GREEN]
+            )
+        ).to.be.true
+    })
+
+    it("detects 3.2.2 Big Three Dragons", function() {
+        const hand = mjtiles.convStringToTiles("123b HHH GGG RRR EE")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.BIG_THREE_DRAGONS,
+                 scoring.YakuType.VALUE_HONOR_WHITE,
+                 scoring.YakuType.VALUE_HONOR_GREEN,
+                 scoring.YakuType.VALUE_HONOR_RED]
+            )
+        ).to.be.true
+    })
 })
 
 describe("4.0 Triplets and Kong", function() {

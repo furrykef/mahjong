@@ -146,10 +146,13 @@ function scoreSets(sets: mjtiles.Tile[][]) {
     let triplets = 0
     let runs = 0
     let pairs = 0
+    let dragon_triplets = 0
+    let dragon_pair = false
     for (const set of sets) {
         if (set.length === 4 || (set.length === 3 && set[0].equals(set[1]))) {
             ++triplets
             if (set[0].suit === mjtiles.Suit.DRAGONS) {
+                ++dragon_triplets
                 switch (set[0].rank) {
                     case mjtiles.Dragon.WHITE: yaku_list.push(YakuType.VALUE_HONOR_WHITE); break
                     case mjtiles.Dragon.GREEN: yaku_list.push(YakuType.VALUE_HONOR_GREEN); break
@@ -161,6 +164,9 @@ function scoreSets(sets: mjtiles.Tile[][]) {
             ++runs
         } else if (set.length === 2) {
             ++pairs
+            if (set[0].suit === mjtiles.Suit.DRAGONS) {
+                dragon_pair = true
+            }
         } else {
             throw new Error("Invalid set in scoreSets")
         }
@@ -170,6 +176,11 @@ function scoreSets(sets: mjtiles.Tile[][]) {
         // Regular hand
         if (triplets === 4) {
             yaku_list.push(YakuType.ALL_TRIPLETS)
+        }
+        if (dragon_triplets === 3) {
+            yaku_list.push(YakuType.BIG_THREE_DRAGONS)
+        } else if (dragon_triplets === 2 && dragon_pair) {
+            yaku_list.push(YakuType.SMALL_THREE_DRAGONS)
         }
     } else if (pairs === 7) {
         yaku_list.push(YakuType.SEVEN_PAIRS)
