@@ -41,6 +41,22 @@ describe("Basic hand scoring", function() {
     })
 })
 
+describe("1.0 Trivial Patterns", function() {
+    it("detects 1.1 All Sequences", function() {
+        const hand = mjtiles.convStringToTiles("123456b 456789c HH")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.ALL_SEQUENCES]
+            )
+        ).to.be.true
+    })
+
+    // We skip 1.2 Concealed Hand since it's tested throughout
+})
+
 describe("3.0 Honor Tiles", function() {
     it("detects 3.1 Value Honor (White Dragon)", function() {
         const hand = mjtiles.convStringToTiles("123b 456c 789d HHH EE")

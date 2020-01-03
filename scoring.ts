@@ -182,6 +182,9 @@ function scoreSets(sets: mjtiles.Tile[][]) {
         } else if (dragon_triplets === 2 && dragon_pair) {
             yaku_list.push(YakuType.SMALL_THREE_DRAGONS)
         }
+        if (runs === 4) {
+            yaku_list.push(YakuType.ALL_SEQUENCES)
+        }
     } else if (pairs === 7) {
         yaku_list.push(YakuType.SEVEN_PAIRS)
     } else {
