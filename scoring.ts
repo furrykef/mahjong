@@ -59,12 +59,17 @@ export const YakuType = Object.freeze({
     SEVEN_PAIRS: {name: "Seven Pairs", value: 30}
 })
 
+const ORPHANS_PATTERN = mjtiles.sorted(mjtiles.convStringToTiles("19b 19c 19d ESWN HGR"))
+
 
 // Returns:
 //  null if the hand is not complete
 //  a list of yaku otherwise (zero-length if chicken hand)
 export function scoreHand(hand: mjtiles.Tile[]) {
     hand = mjtiles.sorted(hand)
+    if (_.isEqual(_.uniqWith(hand, _.isEqual), ORPHANS_PATTERN)) {
+        return [YakuType.THIRTEEN_TERMINALS, YakuType.CONCEALED_HAND]
+    }
     return scoreHandImpl(hand, [])
 }
 
@@ -80,6 +85,12 @@ export function hasYaku(yaku_list: Yaku[], what: Yaku) {
 }
 
 
+export function compareYaku(yaku_list1: Yaku[], yaku_list2: Yaku[]) {
+    return _.isEqual(_.sortBy(yaku_list1, ['name']),
+                     _.sortBy(yaku_list2, ['name']))
+}
+
+
 function scoreHandImpl(tiles: mjtiles.Tile[], sets: mjtiles.Tile[][]): Yaku[] | null {
     if (tiles.length === 0) {
         // Terminate recursion
@@ -90,8 +101,7 @@ function scoreHandImpl(tiles: mjtiles.Tile[], sets: mjtiles.Tile[][]): Yaku[] | 
     const num_first = countFirstElement(tiles)
     if (num_first >= 3) {
         // This might be a triplet (or triplet plus one, as in 111123),
-        // but might not (as in 11123). So try it as a triplet first and
-        // see what happens.
+        // but might not (as in 11123)
         const yaku = scoreHandImpl(tiles.slice(3), sets.concat([tiles.slice(0, 3)]))
         if (yaku) {
             const score = scoreYaku(yaku)
@@ -102,7 +112,8 @@ function scoreHandImpl(tiles: mjtiles.Tile[], sets: mjtiles.Tile[][]): Yaku[] | 
         }
     }
     if (num_first >= 2) {
-        // This might be a pair of eyes
+        // This might be a pair (either eyes or for Seven Pairs),
+        // but it might not (as in 112233, i.e., 123123)
         const yaku = scoreHandImpl(tiles.slice(2), sets.concat([tiles.slice(0, 2)]))
         if (yaku) {
             const score = scoreYaku(yaku)

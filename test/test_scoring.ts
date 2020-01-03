@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import * as mjtiles from  '../mjtiles'
 import * as scoring from  '../scoring'
 
-describe("Mahjong hand scoring", function() {
+describe("Basic hand scoring", function() {
     it("detects an incomplete hand", function() {
         const hand = mjtiles.convStringToTiles("29b 68c 1223d H G RR S W")
         const yaku_list = scoring.scoreHand(hand)
@@ -38,5 +38,19 @@ describe("Mahjong hand scoring", function() {
         const hand = mjtiles.convStringToTiles("123123b 77c 555d HHH")
         const yaku_list = scoring.scoreHand(hand)
         expect(yaku_list).to.not.be.null
+    })
+})
+
+describe("Pattern-based yaku", function() {
+    it("detects Thirteen Orphans", function() {
+        const hand = mjtiles.convStringToTiles("19b 19c 19d ESWN HGRR")
+        const yaku_list = scoring.scoreHand(hand)!
+        expect(
+            scoring.compareYaku(
+                yaku_list,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.THIRTEEN_TERMINALS]
+            )
+        ).to.be.true
     })
 })
