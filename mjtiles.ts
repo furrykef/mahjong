@@ -40,6 +40,10 @@ export class Tile {
         return !this.isHonor()
     }
 
+    equals(other: Tile) {
+        return _.isEqual(this, other)
+    }
+
     toString() {
         switch (this.suit) {
         case Suit.BAMS: return this.rank + "b"

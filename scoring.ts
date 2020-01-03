@@ -64,24 +64,14 @@ export const YakuType = Object.freeze({
 //  null if the hand is not complete
 //  a list of yaku otherwise (zero-length if chicken hand)
 export function scoreHand(hand: mjtiles.Tile[]) {
-    // @XXX@ This algorithm does not always handle ambiguous melds correctly.
-    // @XXX@ No 13 Orphans
     hand = mjtiles.sorted(hand)
-    const group_result = handleGroup(hand)
-    if (!group_result) {
-        // Incomplete hand
-        return null
-    }
-    let yaku_list = [YakuType.CONCEALED_HAND]
-    if (group_result.pairs === 7) {
-        // Seven-pair hand
-        yaku_list.push(YakuType.SEVEN_PAIRS)
-    } else if (group_result.pairs !== 1
-               || group_result.triplets + group_result.runs !== 4) {
-        // Incomplete hand
-        return null
-    }
-    return yaku_list
+    return scoreHandImpl(hand, [])
+}
+
+
+export function scoreYaku(yaku_list: Yaku[]) {
+    // @TODO@ clamp at 320 unless there's a yaku with a larger listed value
+    return yaku_list.reduce((sum, yaku) => sum + yaku.value, 0)
 }
 
 
@@ -90,72 +80,94 @@ export function hasYaku(yaku_list: Yaku[], what: Yaku) {
 }
 
 
-class GroupResult {
-    triplets = 0
-    runs = 0
-    pairs = 0
-}
-
-
-// @XXX@ forces only one interpretation of the group
-// Some groups are ambiguous, like 11123444 (is it 111 234 44, or 11 123 444?)
-function handleGroup(group: mjtiles.Tile[]): GroupResult | null {
-    let result = new GroupResult()
-    if (group.length === 0) {
+function scoreHandImpl(tiles: mjtiles.Tile[], sets: mjtiles.Tile[][]): Yaku[] | null {
+    if (tiles.length === 0) {
         // Terminate recursion
-        return result
+        return scoreSets(sets)
     }
-    const num_first = countFirstElement(group)
+    let best_yaku = null
+    let best_yaku_score = -1
+    const num_first = countFirstElement(tiles)
     if (num_first >= 3) {
         // This might be a triplet (or triplet plus one, as in 111123),
         // but might not (as in 11123). So try it as a triplet first and
         // see what happens.
-        const sub_result = handleGroup(group.slice(3))
-        if (sub_result) {
-            // This works as a triplet
-            ++result.triplets
-            return sumGroupResults(result, sub_result)
+        const yaku = scoreHandImpl(tiles.slice(3), sets.concat([tiles.slice(0, 3)]))
+        if (yaku) {
+            const score = scoreYaku(yaku)
+            if (score > best_yaku_score) {
+                best_yaku = yaku
+                best_yaku_score = score
+            }
         }
     }
     if (num_first >= 2) {
         // This might be a pair of eyes
-        const sub_result = handleGroup(group.slice(2))
-        if (sub_result) {
-            // This works as a pair of eyes
-            ++result.pairs
-            return sumGroupResults(result, sub_result)
+        const yaku = scoreHandImpl(tiles.slice(2), sets.concat([tiles.slice(0, 2)]))
+        if (yaku) {
+            const score = scoreYaku(yaku)
+            if (score > best_yaku_score) {
+                best_yaku = yaku
+                best_yaku_score = score
+            }
         }
     }
-    // This must be the start of a run, or else the group is invalid
-    const group_minus_run = extractRun(group)
-    if (group_minus_run) {
-        ++result.runs
-        return sumGroupResults(result, handleGroup(group_minus_run))
+    // This might be the start of a run
+    const extraction_result = extractRun(tiles)
+    if (extraction_result) {
+        const [run, tiles_sans_run] = extraction_result
+        const yaku = scoreHandImpl(tiles_sans_run, sets.concat([run]))
+        if (yaku) {
+            const score = scoreYaku(yaku)
+            if (score > best_yaku_score) {
+                best_yaku = yaku
+                best_yaku_score = score
+            }
+        }
     }
-    return null
+    return best_yaku
 }
 
 
-function sumGroupResults(group1: GroupResult | null, group2: GroupResult | null) {
-    if (!group1 || !group2) {
+function scoreSets(sets: mjtiles.Tile[][]) {
+    let yaku_list = [YakuType.CONCEALED_HAND]
+    let triplets = 0
+    let runs = 0
+    let pairs = 0
+    for (const set of sets) {
+        if (set.length === 4) {
+            // Kong
+            ++triplets
+        } else if (set.length === 3) {
+            if (set[0] === set[1]) {
+                ++triplets
+            } else {
+                ++runs
+            }
+        } else if (set.length === 2) {
+            ++pairs
+        } else {
+            throw new Error("Invalid set in scoreSets")
+        }
+    }
+    if (pairs === 7) {
+        // Seven-pair hand
+        yaku_list.push(YakuType.SEVEN_PAIRS)
+    } else if (pairs !== 1 || triplets + runs !== 4) {
+        // Incomplete hand
         return null
     }
-    return {
-        triplets: group1.triplets + group2.triplets,
-        runs: group1.runs + group2.runs,
-        pairs: group1.pairs + group2.pairs
-    }
+    return yaku_list
 }
 
 
 // Assuming the group is sorted, counts the number of copies of the
 // first element in the group
 function countFirstElement(group: mjtiles.Tile[]) {
-    return _.takeWhile(group, (x) => _.isEqual(x, group[0])).length
+    return _.takeWhile(group, (x) => x.equals(group[0])).length
 }
 
 
-// If the group starts with a run, returns the group minus the run
 // If the group does not start with a run, returns null
 // (Note that e.g. 12223 "starts with a run" for our purposes)
 function extractRun(group: mjtiles.Tile[]) {
@@ -166,16 +178,17 @@ function extractRun(group: mjtiles.Tile[]) {
     }
     const second = new mjtiles.Tile(first.suit, first.rank+1)
     const third = new mjtiles.Tile(first.suit, first.rank+2)
+    let run = [group[0]]
     group = group.slice(1)
     const second_idx = _.findIndex(group, second)
     if (second_idx === -1) {
         return null
     }
-    group.splice(second_idx, 1)
+    run.push(group.splice(second_idx, 1)[0])
     const third_idx = _.findIndex(group, third)
     if (third_idx === -1) {
         return null
     }
-    group.splice(third_idx, 1)
-    return group
+    run.push(group.splice(third_idx, 1)[0])
+    return [run, group]
 }
