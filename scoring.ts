@@ -185,7 +185,7 @@ function scoreSets(sets: mjtiles.Tile[][]) {
     }
 
     if (triplets + runs === 4 && pairs === 1) {
-        // Regular hand
+        // We have a complete, regular hand
         if (triplets === 4) {
             yaku_list.push(YakuType.ALL_TRIPLETS)
         }
@@ -194,8 +194,16 @@ function scoreSets(sets: mjtiles.Tile[][]) {
         } else if (dragon_triplets === 2 && dragon_pair) {
             yaku_list.push(YakuType.SMALL_THREE_DRAGONS)
         }
-        if (wind_triplets === 3) {
-            yaku_list.push(YakuType.BIG_THREE_WINDS)
+        if (wind_triplets === 4) {
+            // Limit hand
+            return [YakuType.BIG_FOUR_WINDS]
+        } else if (wind_triplets === 3) {
+            if (wind_pair) {
+                // Limit hand
+                return [YakuType.SMALL_FOUR_WINDS]
+            } else {
+                yaku_list.push(YakuType.BIG_THREE_WINDS)
+            }
         } else if (wind_triplets === 2 && wind_pair) {
             yaku_list.push(YakuType.SMALL_THREE_WINDS)
         }

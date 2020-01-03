@@ -208,6 +208,7 @@ describe("3.0 Honor Tiles", function() {
             )
         ).to.be.true
     })
+
     it("detects 3.3.2 Big Three Winds", function() {
         const hand = mjtiles.convStringToTiles("123b EEE SSS WWW HH")
         const yaku_list = scoring.scoreHand(hand)
@@ -220,6 +221,38 @@ describe("3.0 Honor Tiles", function() {
         ).to.be.true
     })
 
+    it("detects 3.3.3 Small Four Winds", function() {
+        const hand = mjtiles.convStringToTiles("123b EEE SSS WWW NN")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.SMALL_FOUR_WINDS]
+            )
+        ).to.be.true
+    })
+    it("rejects 3.3.3 Small Four Winds with no wind pair", function() {
+        const hand = mjtiles.convStringToTiles("123b EEE SSS WWW HH")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.BIG_THREE_WINDS]
+            )
+        ).to.be.true
+    })
+
+    it("detects 3.3.4 Big Four Winds", function() {
+        const hand = mjtiles.convStringToTiles("EEE SSS WWW NNN 55b")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.BIG_FOUR_WINDS]
+            )
+        ).to.be.true
+    })
 })
 
 describe("4.0 Triplets and Kong", function() {
