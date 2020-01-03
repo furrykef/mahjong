@@ -55,6 +55,48 @@ describe("1.0 Trivial Patterns", function() {
     })
 
     // We skip 1.2 Concealed Hand since it's tested throughout
+
+    it("detects 1.3 No Terminals", function() {
+        const hand = mjtiles.convStringToTiles("222345b 234c 67855d")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.NO_TERMINALS]
+            )
+        ).to.be.true
+    })
+    it("rejects 1.3 No Terminals if hand has honor pair", function() {
+        const hand = mjtiles.convStringToTiles("222345b 234c 678d HH")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND]
+            )
+        ).to.be.true
+    })
+    it("rejects 1.3 No Terminals if hand has 1", function() {
+        const hand = mjtiles.convStringToTiles("222345b 123c 67855d")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND]
+            )
+        ).to.be.true
+    })
+    it("rejects 1.3 No Terminals if hand has 9", function() {
+        const hand = mjtiles.convStringToTiles("222345b 789c 67855d")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND]
+            )
+        ).to.be.true
+    })
 })
 
 describe("3.0 Honor Tiles", function() {

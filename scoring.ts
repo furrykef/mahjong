@@ -143,6 +143,12 @@ function scoreHandImpl(tiles: mjtiles.Tile[], sets: mjtiles.Tile[][]): Yaku[] | 
 
 function scoreSets(sets: mjtiles.Tile[][]) {
     let yaku_list = [YakuType.CONCEALED_HAND]
+
+    const all_tiles = _.flatten(sets)
+    if (all_tiles.every((x) => x.isNumber() && x.rank !== 1 && x.rank !== 9)) {
+        yaku_list.push(YakuType.NO_TERMINALS)
+    }
+
     let triplets = 0
     let runs = 0
     let pairs = 0
