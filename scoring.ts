@@ -82,7 +82,7 @@ export function scoreYaku(yaku_list: Yaku[]) {
 
 
 export function hasYaku(yaku_list: Yaku[], what: Yaku) {
-    return _.findIndex(yaku_list, (x) => x.name === what.name) !== -1
+    return yaku_list.some((x) => x.name === what.name)
 }
 
 
