@@ -71,7 +71,7 @@ export function scoreHand(hand: mjtiles.Tile[]) {
     if (_.isEqual(_.uniqWith(hand, _.isEqual), ORPHANS_PATTERN)) {
         return [YakuType.THIRTEEN_TERMINALS, YakuType.CONCEALED_HAND]
     }
-    return simplifyYaku(scoreHandImpl(hand, []))
+    return scoreHandImpl(hand, [])
 }
 
 
@@ -157,11 +157,6 @@ function scoreHandImpl(tiles: mjtiles.Tile[], sets: mjtiles.Tile[][]): Yaku[] | 
 function scoreSets(sets: mjtiles.Tile[][]) {
     let yaku_list = [YakuType.CONCEALED_HAND]
 
-    const all_tiles = _.flatten(sets)
-    if (all_tiles.every((x) => x.isNumber() && x.rank !== 1 && x.rank !== 9)) {
-        yaku_list.push(YakuType.NO_TERMINALS)
-    }
-
     let triplets = 0
     let runs = 0
     let pairs = 0
@@ -227,7 +222,16 @@ function scoreSets(sets: mjtiles.Tile[][]) {
         // Incomplete hand
         return null
     }
-    return yaku_list
+
+    // If we get here, the hand is known to be complete
+    const all_tiles = _.flatten(sets)
+    if (all_tiles.every((x) => x.isNumber() && x.rank !== 1 && x.rank !== 9)) {
+        yaku_list.push(YakuType.NO_TERMINALS)
+    } else if (all_tiles.every((x) => x.isHonor())) {
+        yaku_list.push(YakuType.ALL_HONORS)
+    }
+
+    return simplifyYaku(yaku_list)
 }
 
 

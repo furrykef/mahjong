@@ -99,6 +99,34 @@ describe("1.0 Trivial Patterns", function() {
     })
 })
 
+
+describe("2.0 One-Suit Patterns", function() {
+    it("detects 2.1 Mixed One-Suit", function() {
+        const hand = mjtiles.convStringToTiles("111333555789b HH")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.MIXED_ONE_SUIT]
+            )
+        ).to.be.true
+    })
+
+    it("detects 2.2 Pure One-Suit", function() {
+        const hand = mjtiles.convStringToTiles("11133355578999b")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.PURE_ONE_SUIT]
+            )
+        ).to.be.true
+    })
+
+})
+
 describe("3.0 Honor Tiles", function() {
     it("detects 3.1 Value Honor (White Dragon)", function() {
         const hand = mjtiles.convStringToTiles("123b 456c 789d HHH EE")
@@ -253,11 +281,33 @@ describe("3.0 Honor Tiles", function() {
             )
         ).to.be.true
     })
+
+    it("detects 3.4 All Honors (standard)", function() {
+        const hand = mjtiles.convStringToTiles("EEE SSS WWW GGG HH")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.ALL_HONORS]
+            )
+        ).to.be.true
+    })
+
+    it("detects 3.4 All Honors (seven-pair)", function() {
+        const hand = mjtiles.convStringToTiles("EE SS WW NN HH GG RR")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.ALL_HONORS]
+            )
+        ).to.be.true
+    })
 })
 
 describe("4.0 Triplets and Kong", function() {
     it("detects 4.1 All Triplets", function() {
-        const hand = mjtiles.convStringToTiles("111333555777b HH")
+        const hand = mjtiles.convStringToTiles("111333555777b 55c")
         const yaku_list = scoring.scoreHand(hand)
         expect(
             scoring.compareYaku(
