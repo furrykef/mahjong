@@ -101,7 +101,7 @@ describe("1.0 Trivial Patterns", function() {
 
 
 describe("2.0 One-Suit Patterns", function() {
-    it("detects 2.1 Mixed One-Suit", function() {
+    it("detects 2.1 Mixed One-Suit (honor pair)", function() {
         const hand = mjtiles.convStringToTiles("111333555789b HH")
         const yaku_list = scoring.scoreHand(hand)
         expect(
@@ -112,8 +112,45 @@ describe("2.0 One-Suit Patterns", function() {
             )
         ).to.be.true
     })
+    it("detects 2.1 Mixed One-Suit (honor triplet)", function() {
+        const hand = mjtiles.convStringToTiles("12333355577b EEE")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.MIXED_ONE_SUIT]
+            )
+        ).to.be.true
+    })
+    it("detects 2.1 Mixed One-Suit (all honors except pair)", function() {
+        const hand = mjtiles.convStringToTiles("EEE WWW HHH GGG 55b")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.VALUE_HONOR_WHITE,
+                 scoring.YakuType.VALUE_HONOR_GREEN,
+                 scoring.YakuType.ALL_TRIPLETS,
+                 scoring.YakuType.MIXED_ONE_SUIT]
+            )
+        ).to.be.true
+    })
+    it("detects 2.1 Mixed One-Suit (seven-pair)", function() {
+        const hand = mjtiles.convStringToTiles("112244556677b HH")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.SEVEN_PAIRS,
+                 scoring.YakuType.MIXED_ONE_SUIT]
+            )
+        ).to.be.true
+    })
 
-    it("detects 2.2 Pure One-Suit", function() {
+    it("detects 2.2 Pure One-Suit (regular)", function() {
         const hand = mjtiles.convStringToTiles("11133355578999b")
         const yaku_list = scoring.scoreHand(hand)
         expect(
@@ -124,7 +161,18 @@ describe("2.0 One-Suit Patterns", function() {
             )
         ).to.be.true
     })
-
+    it("detects 2.2 Pure One-Suit (seven-pair)", function() {
+        const hand = mjtiles.convStringToTiles("11224455667799b")
+        const yaku_list = scoring.scoreHand(hand)
+        expect(
+            scoring.compareYaku(
+                yaku_list!,
+                [scoring.YakuType.CONCEALED_HAND,
+                 scoring.YakuType.SEVEN_PAIRS,
+                 scoring.YakuType.PURE_ONE_SUIT]
+            )
+        ).to.be.true
+    })
 })
 
 describe("3.0 Honor Tiles", function() {
@@ -201,7 +249,7 @@ describe("3.0 Honor Tiles", function() {
     })
 
     it("detects 3.2.2 Big Three Dragons", function() {
-        const hand = mjtiles.convStringToTiles("123b HHH GGG RRR EE")
+        const hand = mjtiles.convStringToTiles("123b HHH GGG RRR 55c")
         const yaku_list = scoring.scoreHand(hand)
         expect(
             scoring.compareYaku(
@@ -238,7 +286,7 @@ describe("3.0 Honor Tiles", function() {
     })
 
     it("detects 3.3.2 Big Three Winds", function() {
-        const hand = mjtiles.convStringToTiles("123b EEE SSS WWW HH")
+        const hand = mjtiles.convStringToTiles("123b EEE SSS WWW 55c")
         const yaku_list = scoring.scoreHand(hand)
         expect(
             scoring.compareYaku(
@@ -260,7 +308,7 @@ describe("3.0 Honor Tiles", function() {
         ).to.be.true
     })
     it("rejects 3.3.3 Small Four Winds with no wind pair", function() {
-        const hand = mjtiles.convStringToTiles("123b EEE SSS WWW HH")
+        const hand = mjtiles.convStringToTiles("123b EEE SSS WWW 55c")
         const yaku_list = scoring.scoreHand(hand)
         expect(
             scoring.compareYaku(

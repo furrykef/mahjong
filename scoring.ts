@@ -225,10 +225,19 @@ function scoreSets(sets: mjtiles.Tile[][]) {
 
     // If we get here, the hand is known to be complete
     const all_tiles = _.flatten(sets)
-    if (all_tiles.every((x) => x.isNumber() && x.rank !== 1 && x.rank !== 9)) {
+    const honors = all_tiles.filter((x) => x.isHonor())
+    const numbers = all_tiles.filter((x) => x.isNumber())
+    const terminals = numbers.filter((x) => x.rank === 1 || x.rank === 9)
+    const suited = numbers.length > 0 && numbers.every((x) => x.suit === numbers[0].suit)
+
+    if (numbers.length - terminals.length === all_tiles.length) {
         yaku_list.push(YakuType.NO_TERMINALS)
-    } else if (all_tiles.every((x) => x.isHonor())) {
+    } else if (honors.length === all_tiles.length) {
         yaku_list.push(YakuType.ALL_HONORS)
+    }
+
+    if (suited) {
+        yaku_list.push((honors.length > 0) ? YakuType.MIXED_ONE_SUIT : YakuType.PURE_ONE_SUIT)
     }
 
     return simplifyYaku(yaku_list)
