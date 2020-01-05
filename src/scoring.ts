@@ -194,7 +194,7 @@ function scoreSets(sets: mjset.Set[]) {
             throw new Error("Invalid set in scoreSets")
         }
 
-        if (set.tiles.some((x) => x.isHonor() || x.isTerminal())) {
+        if (set.tiles.some((x) => x.isHonor || x.isTerminal)) {
             ++num_sets_with_terms_or_honors
         }
     }
@@ -233,9 +233,9 @@ function scoreSets(sets: mjset.Set[]) {
 
     // If we get here, the hand is known to be complete
     const all_tiles = _.flatten(sets.map((x) => x.tiles))
-    const honors = all_tiles.filter((x) => x.isHonor())
-    const numbers = all_tiles.filter((x) => x.isNumber())
-    const terminals = numbers.filter((x) => x.isTerminal())
+    const honors = all_tiles.filter((x) => x.isHonor)
+    const numbers = all_tiles.filter((x) => x.isNumber)
+    const terminals = numbers.filter((x) => x.isTerminal)
     const suited = numbers.length > 0 && numbers.every((x) => x.suit === numbers[0].suit)
 
     if (numbers.length - terminals.length === all_tiles.length) {
@@ -305,7 +305,7 @@ function countFirstElement(group: mjtiles.Tile[]) {
 // (Note that e.g. 12223 "starts with a run" for our purposes)
 function extractRun(tiles: mjtiles.Tile[]) {
     const first = tiles[0]
-    if (first.isHonor()) {
+    if (first.isHonor) {
         // Can't have runs of honor tiles
         return null
     }

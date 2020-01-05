@@ -24,24 +24,24 @@ export enum Wind {
 
 
 export class Tile {
-    suit: Suit
-    rank: number
+    readonly suit: Suit
+    readonly rank: number
 
     constructor(suit: Suit, rank: number) {
         this.suit = suit
         this.rank = rank
     }
 
-    isHonor() {
+    get isHonor() {
         return this.suit === Suit.DRAGONS || this.suit === Suit.WINDS
     }
 
-    isNumber() {
-        return !this.isHonor()
+    get isNumber() {
+        return !this.isHonor
     }
 
-    isTerminal() {
-        return this.isNumber() && (this.rank === 1 || this.rank === 9)
+    get isTerminal() {
+        return this.isNumber && (this.rank === 1 || this.rank === 9)
     }
 
     equals(other: Tile) {
