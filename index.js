@@ -1,1 +1,1 @@
-require('./js/main').main(process.argv)
+require('./built/main').main(process.argv)

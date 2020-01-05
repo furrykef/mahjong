@@ -8,6 +8,6 @@
 		"mocha.requires": [
 			"ts-node/register"
 		],
-		"mocha.files.glob": "test/**/*.ts"
+		"mocha.files.glob": "src/**/*.spec.ts"
 	}
 }

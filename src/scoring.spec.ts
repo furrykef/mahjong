@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 
-import * as mjtiles from  '../mjtiles'
-import * as scoring from  '../scoring'
+import * as mjtiles from  './mjtiles'
+import * as scoring from  './scoring'
 
 const YT = scoring.YakuType
 
