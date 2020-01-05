@@ -1,6 +1,7 @@
 import * as _ from 'lodash'
 
 import * as mjtiles from './mjtiles'
+import * as mjset from './mjset'
 
 
 export interface Yaku {
@@ -105,7 +106,7 @@ function simplifyYaku(yaku_list: Yaku[] | null) {
 }
 
 
-function scoreHandImpl(tiles: mjtiles.Tile[], sets: mjtiles.Tile[][]): Yaku[] | null {
+function scoreHandImpl(tiles: mjtiles.Tile[], sets: mjset.Set[]): Yaku[] | null {
     if (tiles.length === 0) {
         // Terminate recursion
         return scoreSets(sets)
@@ -116,7 +117,8 @@ function scoreHandImpl(tiles: mjtiles.Tile[], sets: mjtiles.Tile[][]): Yaku[] | 
     if (num_first >= 3) {
         // This might be a triplet (or triplet plus one, as in 111123),
         // but might not (as in 11123)
-        const yaku = scoreHandImpl(tiles.slice(3), sets.concat([tiles.slice(0, 3)]))
+        const set = new mjset.Set(tiles.slice(0, 3), true)
+        const yaku = scoreHandImpl(tiles.slice(3), sets.concat([set]))
         if (yaku) {
             const score = scoreYaku(yaku)
             if (score > best_yaku_score) {
@@ -128,7 +130,8 @@ function scoreHandImpl(tiles: mjtiles.Tile[], sets: mjtiles.Tile[][]): Yaku[] | 
     if (num_first >= 2) {
         // This might be a pair (either eyes or for Seven Pairs),
         // but it might not (as in 112233, i.e., 123123)
-        const yaku = scoreHandImpl(tiles.slice(2), sets.concat([tiles.slice(0, 2)]))
+        const set = new mjset.Set(tiles.slice(0, 2), true)
+        const yaku = scoreHandImpl(tiles.slice(2), sets.concat([set]))
         if (yaku) {
             const score = scoreYaku(yaku)
             if (score > best_yaku_score) {
@@ -140,8 +143,7 @@ function scoreHandImpl(tiles: mjtiles.Tile[], sets: mjtiles.Tile[][]): Yaku[] | 
     // This might be the start of a run
     const extraction_result = extractRun(tiles)
     if (extraction_result) {
-        const [run, tiles_sans_run] = extraction_result
-        const yaku = scoreHandImpl(tiles_sans_run, sets.concat([run]))
+        const yaku = scoreHandImpl(extraction_result.sansRun, sets.concat([extraction_result.run]))
         if (yaku) {
             const score = scoreYaku(yaku)
             if (score > best_yaku_score) {
@@ -154,7 +156,7 @@ function scoreHandImpl(tiles: mjtiles.Tile[], sets: mjtiles.Tile[][]): Yaku[] | 
 }
 
 
-function scoreSets(sets: mjtiles.Tile[][]) {
+function scoreSets(sets: mjset.Set[]) {
     let yaku_list = [YakuType.CONCEALED_HAND]
 
     let num_triplets = 0
@@ -166,33 +168,33 @@ function scoreSets(sets: mjtiles.Tile[][]) {
     let has_wind_pair = false
     let num_sets_with_terms_or_honors = 0
     for (const set of sets) {
-        if (set.length === 4 || (set.length === 3 && set[0].equals(set[1]))) {
+        if (set.isTriplet) {
             ++num_triplets
-            if (set[0].suit === mjtiles.Suit.DRAGONS) {
+            if (set.suit === mjtiles.Suit.DRAGONS) {
                 ++num_dragon_triplets
-                switch (set[0].rank) {
+                switch (set.tiles[0].rank) {
                     case mjtiles.Dragon.WHITE: yaku_list.push(YakuType.VALUE_HONOR_WHITE); break
                     case mjtiles.Dragon.GREEN: yaku_list.push(YakuType.VALUE_HONOR_GREEN); break
                     case mjtiles.Dragon.RED: yaku_list.push(YakuType.VALUE_HONOR_RED); break
                     default: throw Error("Impossible honor tile in scoreSets")
                 }
-            } else if (set[0].suit === mjtiles.Suit.WINDS) {
+            } else if (set.suit === mjtiles.Suit.WINDS) {
                 ++num_wind_triplets
             }
-        } else if (set.length === 3) {
+        } else if (set.isRun) {
             ++num_runs
-        } else if (set.length === 2) {
+        } else if (set.isPair) {
             ++num_pairs
-            if (set[0].suit === mjtiles.Suit.DRAGONS) {
+            if (set.suit === mjtiles.Suit.DRAGONS) {
                 has_dragon_pair = true
-            } else if (set[0].suit === mjtiles.Suit.WINDS) {
+            } else if (set.suit === mjtiles.Suit.WINDS) {
                 has_wind_pair = true
             }
         } else {
             throw new Error("Invalid set in scoreSets")
         }
 
-        if (set.some((x) => x.isHonor() || x.isTerminal())) {
+        if (set.tiles.some((x) => x.isHonor() || x.isTerminal())) {
             ++num_sets_with_terms_or_honors
         }
     }
@@ -229,7 +231,7 @@ function scoreSets(sets: mjtiles.Tile[][]) {
     }
 
     // If we get here, the hand is known to be complete
-    const all_tiles = _.flatten(sets)
+    const all_tiles = _.flatten(sets.map((x) => x.tiles))
     const honors = all_tiles.filter((x) => x.isHonor())
     const numbers = all_tiles.filter((x) => x.isNumber())
     const terminals = numbers.filter((x) => x.isTerminal())
@@ -268,27 +270,28 @@ function countFirstElement(group: mjtiles.Tile[]) {
 }
 
 
-// If the group does not start with a run, returns null
+// If tiles does not start with a run, returns null
 // (Note that e.g. 12223 "starts with a run" for our purposes)
-function extractRun(group: mjtiles.Tile[]) {
-    const first = group[0]
+function extractRun(tiles: mjtiles.Tile[]) {
+    const first = tiles[0]
     if (first.isHonor()) {
         // Can't have runs of honor tiles
         return null
     }
     const second = new mjtiles.Tile(first.suit, first.rank+1)
     const third = new mjtiles.Tile(first.suit, first.rank+2)
-    let run = [group[0]]
-    group = group.slice(1)
-    const second_idx = _.findIndex(group, second)
+    let run = [tiles[0]]
+    tiles = tiles.slice(1)
+    const second_idx = _.findIndex(tiles, second)
     if (second_idx === -1) {
         return null
     }
-    run.push(group.splice(second_idx, 1)[0])
-    const third_idx = _.findIndex(group, third)
+    run.push(tiles.splice(second_idx, 1)[0])
+    const third_idx = _.findIndex(tiles, third)
     if (third_idx === -1) {
         return null
     }
-    run.push(group.splice(third_idx, 1)[0])
-    return [run, group]
+    run.push(tiles.splice(third_idx, 1)[0])
+    return {run: new mjset.Set(run, true),
+            sansRun: tiles}
 }
