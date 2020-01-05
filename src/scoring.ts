@@ -176,7 +176,7 @@ function scoreSets(sets: mjset.Set[]) {
                     case mjtiles.Dragon.WHITE: yaku_list.push(YakuType.VALUE_HONOR_WHITE); break
                     case mjtiles.Dragon.GREEN: yaku_list.push(YakuType.VALUE_HONOR_GREEN); break
                     case mjtiles.Dragon.RED: yaku_list.push(YakuType.VALUE_HONOR_RED); break
-                    default: throw Error("Impossible honor tile in scoreSets")
+                    default: throw new Error("Impossible honor tile in scoreSets")
                 }
             } else if (set.suit === mjtiles.Suit.WINDS) {
                 ++num_wind_triplets
