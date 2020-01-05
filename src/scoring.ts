@@ -78,7 +78,7 @@ export function scoreHand(hand: mjtiles.Tile[]) {
 
 export function scoreYaku(yaku_list: Yaku[]) {
     // @TODO@ clamp at 320 unless there's a yaku with a larger listed value
-    return yaku_list.reduce((sum, yaku) => sum + yaku.value, 0)
+    return _.sumBy(yaku_list, (x) => x.value)
 }
 
 
@@ -223,6 +223,7 @@ function scoreSets(sets: mjset.Set[]) {
         if (num_runs === 4) {
             yaku_list.push(YakuType.ALL_SEQUENCES)
         }
+        yaku_list = yaku_list.concat(detectSimilarSets(sets))
     } else if (num_pairs === 7) {
         yaku_list.push(YakuType.SEVEN_PAIRS)
     } else {
@@ -260,6 +261,36 @@ function scoreSets(sets: mjset.Set[]) {
     }
 
     return simplifyYaku(yaku_list)
+}
+
+
+// Detects yaku in sections 5, 6, and 7 of the Zung Jung yaku list
+// (in other words, the most annoying ones to detect!)
+function detectSimilarSets(sets: mjset.Set[]) {
+    let yaku_list: Yaku[] = []
+
+    let runs = sets.filter((x) => x.isRun)
+
+    // Detect identical sets
+    // @TODO@ using toString is pretty hacky
+    let counted_runs = _.countBy(runs, (x) => x.tiles[0].toString())
+    let num_double_runs = 0
+    for (const num of Object.values(counted_runs)) {
+        if (num === 2) {
+            ++num_double_runs
+        } else if (num === 3) {
+            yaku_list.push(YakuType.THREE_IDENTICAL_SEQUENCES)
+        } else if (num === 4) {
+            yaku_list.push(YakuType.FOUR_IDENTICAL_SEQUENCES)
+        }
+    }
+    if (num_double_runs === 1) {
+        yaku_list.push(YakuType.TWO_IDENTICAL_SEQUENCES)
+    } else if (num_double_runs === 2) {
+        yaku_list.push(YakuType.TWO_IDENTICAL_SEQUENCES_TWICE)
+    }
+
+    return yaku_list
 }
 
 

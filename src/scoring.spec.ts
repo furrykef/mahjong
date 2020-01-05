@@ -167,6 +167,27 @@ describe("4.0 Triplets and Kong", function() {
 })
 
 
+describe("5.0 Identical Sets", function() {
+   it("detects 5.1.1 Two Identical Sequences",
+      testYaku("123123b 333c EEE HH",
+               [YT.CONCEALED_HAND, YT.TWO_IDENTICAL_SEQUENCES]))
+
+   it("detects 5.1.2 Two Identical Sequences Twice",
+      testYaku("123123b 456456c HH",
+               [YT.CONCEALED_HAND,
+                YT.ALL_SEQUENCES,
+                YT.TWO_IDENTICAL_SEQUENCES_TWICE]))
+
+   it("detects 5.1.3 Three Identical Sequences",
+      testYaku("123123123b 333c HH",
+               [YT.CONCEALED_HAND, YT.THREE_IDENTICAL_SEQUENCES]))
+
+   it("detects 5.1.4 Four Identical Sequences",
+      testYaku("123123123123b HH",
+               [YT.FOUR_IDENTICAL_SEQUENCES]))
+})
+
+
 describe("8.0 Terminals", function() {
    it("detects 8.1.1 Mixed Lesser Terminals",
       testYaku("111b 789c EEE NNN HH",
