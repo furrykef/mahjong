@@ -1,12 +1,14 @@
 // Represents a set of tiles (meld or pair)
+import * as _ from 'lodash'
+
 import * as mjtiles from './mjtiles'
 
 export class Set {
-    readonly tiles: mjtiles.Tile[]
+    readonly tiles: readonly mjtiles.Tile[]
     readonly concealed: boolean
 
     constructor(tiles: mjtiles.Tile[], concealed: boolean) {
-        this.tiles = tiles
+        this.tiles = Object.freeze(tiles)
         this.concealed = concealed
     }
 
@@ -28,5 +30,18 @@ export class Set {
 
     get isPair() {
         return this.tiles.length === 2
+    }
+
+    changeSuit(suit: mjtiles.Suit) {
+        const tiles = this.tiles.map((x) => new mjtiles.Tile(suit, x.rank))
+        return new Set(tiles, this.concealed)
+    }
+
+    // Two sets match if:
+    //  * They are both the same run in the same suit
+    //  * They are both the same triplet in the same suit,
+    //      even if one is a kong and the other is not
+    matches(other: Set) {
+        return _.isEqual(this.tiles.slice(0, 3), other.tiles.slice(0, 3))
     }
 }

@@ -188,6 +188,21 @@ describe("5.0 Identical Sets", function() {
 })
 
 
+describe("6.0 Similar Sets", function() {
+   it("detects 6.1 Three Similar Sequences",
+      testYaku("123b 123c 123d 555b HH",
+               [YT.CONCEALED_HAND, YT.THREE_SIMILAR_SEQUENCES]))
+
+   it("detects 6.2.1 Small Three Similar Triplets",
+      testYaku("555b 555c 55d 123b 789c",
+               [YT.CONCEALED_HAND, YT.SMALL_THREE_SIMILAR_TRIPLETS]))
+
+   it("detects 6.2.1  Three Similar Triplets",
+      testYaku("555b 555c 555d 123b HH",
+               [YT.CONCEALED_HAND, YT.THREE_SIMILAR_TRIPLETS]))
+})
+
+
 describe("8.0 Terminals", function() {
    it("detects 8.1.1 Mixed Lesser Terminals",
       testYaku("111b 789c EEE NNN HH",
