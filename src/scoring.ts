@@ -290,6 +290,17 @@ function detectSimilarSets(sets: mjset.Set[]) {
         yaku_list.push(YakuType.TWO_IDENTICAL_SEQUENCES_TWICE)
     }
 
+    // Detect similar sets
+    for (const set of sets) {
+        if (set.suit === mjtiles.Suit.BAMS) {
+            const cracks = set.changeSuit(mjtiles.Suit.CRACKS)
+            const dots = set.changeSuit(mjtiles.Suit.DOTS)
+            if (sets.some((x) => x.matches(cracks)) && sets.some((x) => x.matches(dots))) {
+                yaku_list.push(set.isTriplet ? YakuType.THREE_SIMILAR_TRIPLETS : YakuType.THREE_SIMILAR_SEQUENCES)
+            }
+        }
+    }
+
     return yaku_list
 }
 

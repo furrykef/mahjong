@@ -197,7 +197,7 @@ describe("6.0 Similar Sets", function() {
       testYaku("555b 555c 55d 123b 789c",
                [YT.CONCEALED_HAND, YT.SMALL_THREE_SIMILAR_TRIPLETS]))
 
-   it("detects 6.2.1  Three Similar Triplets",
+   it("detects 6.2.2  Three Similar Triplets",
       testYaku("555b 555c 555d 123b HH",
                [YT.CONCEALED_HAND, YT.THREE_SIMILAR_TRIPLETS]))
 })
