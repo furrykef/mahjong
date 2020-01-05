@@ -164,6 +164,7 @@ function scoreSets(sets: mjtiles.Tile[][]) {
     let has_dragon_pair = false
     let num_wind_triplets = 0
     let has_wind_pair = false
+    let num_sets_with_terms_or_honors = 0
     for (const set of sets) {
         if (set.length === 4 || (set.length === 3 && set[0].equals(set[1]))) {
             ++num_triplets
@@ -189,6 +190,10 @@ function scoreSets(sets: mjtiles.Tile[][]) {
             }
         } else {
             throw new Error("Invalid set in scoreSets")
+        }
+
+        if (set.some((x) => x.isHonor() || x.isTerminal())) {
+            ++num_sets_with_terms_or_honors
         }
     }
 
@@ -227,7 +232,7 @@ function scoreSets(sets: mjtiles.Tile[][]) {
     const all_tiles = _.flatten(sets)
     const honors = all_tiles.filter((x) => x.isHonor())
     const numbers = all_tiles.filter((x) => x.isNumber())
-    const terminals = numbers.filter((x) => x.rank === 1 || x.rank === 9)
+    const terminals = numbers.filter((x) => x.isTerminal())
     const suited = numbers.length > 0 && numbers.every((x) => x.suit === numbers[0].suit)
 
     if (numbers.length - terminals.length === all_tiles.length) {
@@ -239,6 +244,12 @@ function scoreSets(sets: mjtiles.Tile[][]) {
             yaku_list.push(YakuType.PURE_GREATER_TERMINALS)
         } else {
             yaku_list.push(YakuType.MIXED_GREATER_TERMINALS)
+        }
+    } else if (num_sets_with_terms_or_honors === sets.length) {
+        if (honors.length === 0) {
+            yaku_list.push(YakuType.PURE_LESSER_TERMINALS)
+        } else {
+            yaku_list.push(YakuType.MIXED_LESSER_TERMINALS)
         }
     }
 

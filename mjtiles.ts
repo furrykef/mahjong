@@ -40,6 +40,10 @@ export class Tile {
         return !this.isHonor()
     }
 
+    isTerminal() {
+        return this.isNumber() && (this.rank === 1 || this.rank === 9)
+    }
+
     equals(other: Tile) {
         return _.isEqual(this, other)
     }

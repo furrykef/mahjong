@@ -169,7 +169,7 @@ describe("4.0 Triplets and Kong", function() {
 
 describe("8.0 Terminals", function() {
    it("detects 8.1.1 Mixed Lesser Terminals",
-      testYaku("111b 789b EEE NNN HH",
+      testYaku("111b 789c EEE NNN HH",
                [YT.CONCEALED_HAND, YT.MIXED_LESSER_TERMINALS]))
 
    it("detects 8.1.2 Pure Lesser Terminals",
