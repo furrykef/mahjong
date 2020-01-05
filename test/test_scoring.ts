@@ -167,6 +167,35 @@ describe("4.0 Triplets and Kong", function() {
 })
 
 
+describe("8.0 Terminals", function() {
+   it("detects 8.1.1 Mixed Lesser Terminals",
+      testYaku("111b 789b EEE NNN HH",
+               [YT.CONCEALED_HAND, YT.MIXED_LESSER_TERMINALS]))
+
+   it("detects 8.1.2 Pure Lesser Terminals",
+      testYaku("111b 789b 123c 999c 11d",
+               [YT.CONCEALED_HAND, YT.PURE_LESSER_TERMINALS]))
+
+   it("detects 8.1.3 Mixed Greater Terminals (regular)",
+   testYaku("111b 999c EEE NNN HH",
+            [YT.CONCEALED_HAND,
+             YT.ALL_TRIPLETS,
+             YT.MIXED_GREATER_TERMINALS]))
+   it("detects 8.1.3 Mixed Greater Terminals (seven-pair)",
+      testYaku("1199b 1199c HH GG RR",
+               [YT.CONCEALED_HAND,
+                YT.SEVEN_PAIRS,
+                YT.MIXED_GREATER_TERMINALS]))
+
+   it("detects 8.1.4 Pure Greater Terminals (regular)",
+      testYaku("111b 999b 111c 999c 11d",
+               [YT.PURE_GREATER_TERMINALS]))
+   it("detects 8.1.4 Pure Greater Terminals (seven-pair)",
+      testYaku("1199b 1199c 119999d",
+               [YT.PURE_GREATER_TERMINALS]))
+})
+
+
 describe("10.0 Irregular Hands", function() {
     it("detects 10.1 Thirteen Terminals",
        testYaku("19b 19c 19d ESWN HGRR",

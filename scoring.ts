@@ -157,18 +157,18 @@ function scoreHandImpl(tiles: mjtiles.Tile[], sets: mjtiles.Tile[][]): Yaku[] | 
 function scoreSets(sets: mjtiles.Tile[][]) {
     let yaku_list = [YakuType.CONCEALED_HAND]
 
-    let triplets = 0
-    let runs = 0
-    let pairs = 0
-    let dragon_triplets = 0
-    let dragon_pair = false
-    let wind_triplets = 0
-    let wind_pair = false
+    let num_triplets = 0
+    let num_runs = 0
+    let num_pairs = 0
+    let num_dragon_triplets = 0
+    let has_dragon_pair = false
+    let num_wind_triplets = 0
+    let has_wind_pair = false
     for (const set of sets) {
         if (set.length === 4 || (set.length === 3 && set[0].equals(set[1]))) {
-            ++triplets
+            ++num_triplets
             if (set[0].suit === mjtiles.Suit.DRAGONS) {
-                ++dragon_triplets
+                ++num_dragon_triplets
                 switch (set[0].rank) {
                     case mjtiles.Dragon.WHITE: yaku_list.push(YakuType.VALUE_HONOR_WHITE); break
                     case mjtiles.Dragon.GREEN: yaku_list.push(YakuType.VALUE_HONOR_GREEN); break
@@ -176,47 +176,47 @@ function scoreSets(sets: mjtiles.Tile[][]) {
                     default: throw Error("Impossible honor tile in scoreSets")
                 }
             } else if (set[0].suit === mjtiles.Suit.WINDS) {
-                ++wind_triplets
+                ++num_wind_triplets
             }
         } else if (set.length === 3) {
-            ++runs
+            ++num_runs
         } else if (set.length === 2) {
-            ++pairs
+            ++num_pairs
             if (set[0].suit === mjtiles.Suit.DRAGONS) {
-                dragon_pair = true
+                has_dragon_pair = true
             } else if (set[0].suit === mjtiles.Suit.WINDS) {
-                wind_pair = true
+                has_wind_pair = true
             }
         } else {
             throw new Error("Invalid set in scoreSets")
         }
     }
 
-    if (triplets + runs === 4 && pairs === 1) {
+    if (num_triplets + num_runs === 4 && num_pairs === 1) {
         // We have a complete, regular hand
-        if (triplets === 4) {
+        if (num_triplets === 4) {
             yaku_list.push(YakuType.ALL_TRIPLETS)
         }
-        if (dragon_triplets === 3) {
+        if (num_dragon_triplets === 3) {
             yaku_list.push(YakuType.BIG_THREE_DRAGONS)
-        } else if (dragon_triplets === 2 && dragon_pair) {
+        } else if (num_dragon_triplets === 2 && has_dragon_pair) {
             yaku_list.push(YakuType.SMALL_THREE_DRAGONS)
         }
-        if (wind_triplets === 4) {
+        if (num_wind_triplets === 4) {
             yaku_list.push(YakuType.BIG_FOUR_WINDS)
-        } else if (wind_triplets === 3) {
-            if (wind_pair) {
+        } else if (num_wind_triplets === 3) {
+            if (has_wind_pair) {
                 yaku_list.push(YakuType.SMALL_FOUR_WINDS)
             } else {
                 yaku_list.push(YakuType.BIG_THREE_WINDS)
             }
-        } else if (wind_triplets === 2 && wind_pair) {
+        } else if (num_wind_triplets === 2 && has_wind_pair) {
             yaku_list.push(YakuType.SMALL_THREE_WINDS)
         }
-        if (runs === 4) {
+        if (num_runs === 4) {
             yaku_list.push(YakuType.ALL_SEQUENCES)
         }
-    } else if (pairs === 7) {
+    } else if (num_pairs === 7) {
         yaku_list.push(YakuType.SEVEN_PAIRS)
     } else {
         // Incomplete hand
@@ -234,6 +234,12 @@ function scoreSets(sets: mjtiles.Tile[][]) {
         yaku_list.push(YakuType.NO_TERMINALS)
     } else if (honors.length === all_tiles.length) {
         yaku_list.push(YakuType.ALL_HONORS)
+    } else if (terminals.length + honors.length === all_tiles.length) {
+        if (honors.length === 0) {
+            yaku_list.push(YakuType.PURE_GREATER_TERMINALS)
+        } else {
+            yaku_list.push(YakuType.MIXED_GREATER_TERMINALS)
+        }
     }
 
     if (suited) {
