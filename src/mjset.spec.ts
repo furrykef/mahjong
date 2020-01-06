@@ -97,4 +97,24 @@ describe("Test mjset", function() {
         expect(set1.matches(set2)).to.be.true
         expect(set2.matches(set1)).to.be.true
     })
+
+    it("can bump runs", function() {
+        const tiles1 = mjtiles.convStringToTiles("123b")
+        const set1 = new mjset.Set(tiles1, true)
+        const tiles2 = mjtiles.convStringToTiles("456b")
+        const set2 = new mjset.Set(tiles2, true)
+        const bumped = set1.bump(3)
+        expect(bumped.matches(set2)).to.be.true
+        expect(set2.matches(bumped)).to.be.true
+    })
+
+    it("can bump triplets", function() {
+        const tiles1 = mjtiles.convStringToTiles("111b")
+        const set1 = new mjset.Set(tiles1, true)
+        const tiles2 = mjtiles.convStringToTiles("222b")
+        const set2 = new mjset.Set(tiles2, true)
+        const bumped = set1.bump(1)
+        expect(bumped.matches(set2)).to.be.true
+        expect(set2.matches(bumped)).to.be.true
+    })
 })

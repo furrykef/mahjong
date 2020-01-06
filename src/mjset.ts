@@ -44,4 +44,9 @@ export class Set {
     matches(other: Set) {
         return _.isEqual(this.tiles.slice(0, 3), other.tiles.slice(0, 3))
     }
+
+    bump(amount: number) {
+        const tiles = this.tiles.map((x) => new mjtiles.Tile(x.suit, x.rank + amount))
+        return new Set(tiles, this.concealed)
+    }
 }

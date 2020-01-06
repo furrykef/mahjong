@@ -290,7 +290,8 @@ function detectSimilarSets(sets: mjset.Set[]) {
         yaku_list.push(YakuType.TWO_IDENTICAL_SEQUENCES_TWICE)
     }
 
-    // Detect similar sets
+    // Detect similar and consecutive sets
+    let found_four_consecutive_triplets = false
     for (const set of sets) {
         if (set.suit === mjtiles.Suit.BAMS) {
             const cracks = set.changeSuit(mjtiles.Suit.CRACKS)
@@ -298,6 +299,26 @@ function detectSimilarSets(sets: mjset.Set[]) {
             if (sets.some((x) => x.matches(cracks)) && sets.some((x) => x.matches(dots))) {
                 yaku_list.push(set.isTriplet ? YakuType.THREE_SIMILAR_TRIPLETS : YakuType.THREE_SIMILAR_SEQUENCES)
             }
+        }
+
+        if (set.isRun && set.tiles[0].rank === 1) {
+            const mid = set.bump(3)
+            const high = set.bump(6)
+            if (sets.some((x) => x.matches(mid)) && sets.some((x) => x.matches(high))) {
+                yaku_list.push(YakuType.NINE_TILE_STRAIGHT)
+            }
+        } else if (set.isTriplet && set.tiles[0].isNumber && !found_four_consecutive_triplets) {
+            const plus1 = set.bump(1)
+            const plus2 = set.bump(2)
+            const plus3 = set.bump(3)
+            if (sets.some((x) => x.matches(plus1)) && sets.some((x) => x.matches(plus2))) {
+                if (sets.some((x) => x.matches(plus3))) {
+                    yaku_list.push(YakuType.FOUR_CONSECUTIVE_TRIPLETS)
+                    found_four_consecutive_triplets = true
+                } else {
+                    yaku_list.push(YakuType.THREE_CONSECUTIVE_TRIPLETS)
+                }
+            }            
         }
     }
 

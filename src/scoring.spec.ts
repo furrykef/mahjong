@@ -180,8 +180,10 @@ describe("Test scoring", function() {
                     YT.TWO_IDENTICAL_SEQUENCES_TWICE]))
 
        it("detects 5.1.3 Three Identical Sequences",
-          testYaku("123123123b 333c HH",
-                   [YT.CONCEALED_HAND, YT.THREE_IDENTICAL_SEQUENCES]))
+          testYaku("123123123b 456c HH",
+                   [YT.CONCEALED_HAND,
+                    YT.ALL_SEQUENCES,
+                    YT.THREE_IDENTICAL_SEQUENCES]))
 
        it("detects 5.1.4 Four Identical Sequences",
           testYaku("123123123123b HH",
@@ -198,10 +200,31 @@ describe("Test scoring", function() {
           testYaku("555b 555c 55d 123b 789c",
                    [YT.CONCEALED_HAND, YT.SMALL_THREE_SIMILAR_TRIPLETS]))
 
-       it("detects 6.2.2  Three Similar Triplets",
+       it("detects 6.2.2 Three Similar Triplets",
           testYaku("555b 555c 555d 123b HH",
                    [YT.CONCEALED_HAND, YT.THREE_SIMILAR_TRIPLETS]))
     })
+
+
+    describe("7.0 Consecutive Sets", function() {
+      it("detects 7.1 Nine-Tile Straight",
+         testYaku("123456789b 111c HH",
+                  [YT.CONCEALED_HAND, YT.NINE_TILE_STRAIGHT]))
+
+      // If you don't add in All Triplets, it will be scored as
+      // Three Identical Sequences instead
+      it("detects 7.2.1 Three Consecutive Triplets (all triplets)",
+         testYaku("111222333b 555c HH",
+                  [YT.CONCEALED_HAND,
+                   YT.ALL_TRIPLETS,
+                   YT.THREE_CONSECUTIVE_TRIPLETS]))
+
+      it("detects 7.2.2 Four Consecutive Triplets",
+         testYaku("111222333444b 55c",
+                  [YT.CONCEALED_HAND,
+                   YT.ALL_TRIPLETS,
+                   YT.FOUR_CONSECUTIVE_TRIPLETS]))
+   })
 
 
     describe("8.0 Terminals", function() {
