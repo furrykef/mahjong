@@ -169,90 +169,90 @@ describe("Test scoring", function() {
 
 
     describe("5.0 Identical Sets", function() {
-       it("detects 5.1.1 Two Identical Sequences",
-          testYaku("123123b 333c EEE HH",
-                   [YT.CONCEALED_HAND, YT.TWO_IDENTICAL_SEQUENCES]))
+        it("detects 5.1.1 Two Identical Sequences",
+           testYaku("123123b 333c EEE HH",
+                    [YT.CONCEALED_HAND, YT.TWO_IDENTICAL_SEQUENCES]))
 
-       it("detects 5.1.2 Two Identical Sequences Twice",
-          testYaku("123123b 456456c HH",
-                   [YT.CONCEALED_HAND,
-                    YT.ALL_SEQUENCES,
-                    YT.TWO_IDENTICAL_SEQUENCES_TWICE]))
+        it("detects 5.1.2 Two Identical Sequences Twice",
+           testYaku("123123b 456456c HH",
+                    [YT.CONCEALED_HAND,
+                     YT.ALL_SEQUENCES,
+                     YT.TWO_IDENTICAL_SEQUENCES_TWICE]))
 
-       it("detects 5.1.3 Three Identical Sequences",
-          testYaku("123123123b 456c HH",
-                   [YT.CONCEALED_HAND,
-                    YT.ALL_SEQUENCES,
-                    YT.THREE_IDENTICAL_SEQUENCES]))
+        it("detects 5.1.3 Three Identical Sequences",
+           testYaku("123123123b 456c HH",
+                    [YT.CONCEALED_HAND,
+                     YT.ALL_SEQUENCES,
+                     YT.THREE_IDENTICAL_SEQUENCES]))
 
-       it("detects 5.1.4 Four Identical Sequences",
-          testYaku("123123123123b HH",
-                   [YT.FOUR_IDENTICAL_SEQUENCES]))
+        it("detects 5.1.4 Four Identical Sequences",
+           testYaku("123123123123b HH",
+                    [YT.FOUR_IDENTICAL_SEQUENCES]))
     })
 
 
     describe("6.0 Similar Sets", function() {
-       it("detects 6.1 Three Similar Sequences",
-          testYaku("123b 123c 123d 555b HH",
-                   [YT.CONCEALED_HAND, YT.THREE_SIMILAR_SEQUENCES]))
+        it("detects 6.1 Three Similar Sequences",
+           testYaku("123b 123c 123d 555b HH",
+                    [YT.CONCEALED_HAND, YT.THREE_SIMILAR_SEQUENCES]))
 
-       it("detects 6.2.1 Small Three Similar Triplets",
-          testYaku("555b 555c 55d 123b 789c",
-                   [YT.CONCEALED_HAND, YT.SMALL_THREE_SIMILAR_TRIPLETS]))
+        it("detects 6.2.1 Small Three Similar Triplets",
+           testYaku("555b 555c 55d 123b 789c",
+                    [YT.CONCEALED_HAND, YT.SMALL_THREE_SIMILAR_TRIPLETS]))
 
-       it("detects 6.2.2 Three Similar Triplets",
-          testYaku("555b 555c 555d 123b HH",
-                   [YT.CONCEALED_HAND, YT.THREE_SIMILAR_TRIPLETS]))
+        it("detects 6.2.2 Three Similar Triplets",
+           testYaku("555b 555c 555d 123b HH",
+                    [YT.CONCEALED_HAND, YT.THREE_SIMILAR_TRIPLETS]))
     })
 
 
     describe("7.0 Consecutive Sets", function() {
-      it("detects 7.1 Nine-Tile Straight",
-         testYaku("123456789b 111c HH",
-                  [YT.CONCEALED_HAND, YT.NINE_TILE_STRAIGHT]))
+        it("detects 7.1 Nine-Tile Straight",
+           testYaku("123456789b 111c HH",
+                    [YT.CONCEALED_HAND, YT.NINE_TILE_STRAIGHT]))
 
-      // If you don't add in All Triplets, it will be scored as
-      // Three Identical Sequences instead
-      it("detects 7.2.1 Three Consecutive Triplets (all triplets)",
-         testYaku("111222333b 555c HH",
-                  [YT.CONCEALED_HAND,
-                   YT.ALL_TRIPLETS,
-                   YT.THREE_CONSECUTIVE_TRIPLETS]))
+        // If you don't add in All Triplets, it will be scored as
+        // Three Identical Sequences instead
+        it("detects 7.2.1 Three Consecutive Triplets (all triplets)",
+           testYaku("111222333b 555c HH",
+                    [YT.CONCEALED_HAND,
+                     YT.ALL_TRIPLETS,
+                     YT.THREE_CONSECUTIVE_TRIPLETS]))
 
-      it("detects 7.2.2 Four Consecutive Triplets",
-         testYaku("111222333444b 55c",
-                  [YT.CONCEALED_HAND,
-                   YT.ALL_TRIPLETS,
-                   YT.FOUR_CONSECUTIVE_TRIPLETS]))
+         it("detects 7.2.2 Four Consecutive Triplets",
+            testYaku("111222333444b 55c",
+                     [YT.CONCEALED_HAND,
+                      YT.ALL_TRIPLETS,
+                      YT.FOUR_CONSECUTIVE_TRIPLETS]))
    })
 
 
     describe("8.0 Terminals", function() {
-       it("detects 8.1.1 Mixed Lesser Terminals",
-          testYaku("111b 789c EEE NNN HH",
-                   [YT.CONCEALED_HAND, YT.MIXED_LESSER_TERMINALS]))
+        it("detects 8.1.1 Mixed Lesser Terminals",
+           testYaku("111b 789c EEE NNN HH",
+                    [YT.CONCEALED_HAND, YT.MIXED_LESSER_TERMINALS]))
 
-       it("detects 8.1.2 Pure Lesser Terminals",
-          testYaku("111b 789b 123c 999c 11d",
-                   [YT.CONCEALED_HAND, YT.PURE_LESSER_TERMINALS]))
+        it("detects 8.1.2 Pure Lesser Terminals",
+           testYaku("111b 789b 123c 999c 11d",
+                    [YT.CONCEALED_HAND, YT.PURE_LESSER_TERMINALS]))
 
-       it("detects 8.1.3 Mixed Greater Terminals (regular)",
-       testYaku("111b 999c EEE NNN HH",
-                [YT.CONCEALED_HAND,
-                 YT.ALL_TRIPLETS,
-                 YT.MIXED_GREATER_TERMINALS]))
-       it("detects 8.1.3 Mixed Greater Terminals (seven-pair)",
-          testYaku("1199b 1199c HH GG RR",
-                   [YT.CONCEALED_HAND,
-                    YT.SEVEN_PAIRS,
-                    YT.MIXED_GREATER_TERMINALS]))
+        it("detects 8.1.3 Mixed Greater Terminals (regular)",
+           testYaku("111b 999c EEE NNN HH",
+                    [YT.CONCEALED_HAND,
+                     YT.ALL_TRIPLETS,
+                     YT.MIXED_GREATER_TERMINALS]))
+        it("detects 8.1.3 Mixed Greater Terminals (seven-pair)",
+           testYaku("1199b 1199c HH GG RR",
+                    [YT.CONCEALED_HAND,
+                     YT.SEVEN_PAIRS,
+                     YT.MIXED_GREATER_TERMINALS]))
 
-       it("detects 8.1.4 Pure Greater Terminals (regular)",
-          testYaku("111b 999b 111c 999c 11d",
-                   [YT.PURE_GREATER_TERMINALS]))
-       it("detects 8.1.4 Pure Greater Terminals (seven-pair)",
-          testYaku("1199b 1199c 119999d",
-                   [YT.PURE_GREATER_TERMINALS]))
+        it("detects 8.1.4 Pure Greater Terminals (regular)",
+           testYaku("111b 999b 111c 999c 11d",
+                    [YT.PURE_GREATER_TERMINALS]))
+        it("detects 8.1.4 Pure Greater Terminals (seven-pair)",
+           testYaku("1199b 1199c 119999d",
+                    [YT.PURE_GREATER_TERMINALS]))
     })
 
 
