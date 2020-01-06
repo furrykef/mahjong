@@ -62,6 +62,15 @@ describe("Test mjset", function() {
         expect(set2.matches(set1)).to.be.true
     })
 
+    it("doesn't match runs of different ranks", function() {
+        const tiles1 = mjtiles.convStringToTiles("123b")
+        const set1 = new mjset.Set(tiles1, true)
+        const tiles2 = mjtiles.convStringToTiles("234b")
+        const set2 = new mjset.Set(tiles2, true)
+        expect(set1.matches(set2)).to.be.false
+        expect(set2.matches(set1)).to.be.false
+    })
+
     it("doesn't match runs of different suits", function() {
         const tiles1 = mjtiles.convStringToTiles("123b")
         const set1 = new mjset.Set(tiles1, true)
@@ -78,6 +87,15 @@ describe("Test mjset", function() {
         const set2 = new mjset.Set(tiles2, true)
         expect(set1.matches(set2)).to.be.true
         expect(set2.matches(set1)).to.be.true
+    })
+
+    it("doesn't match triplets of different ranks", function() {
+        const tiles1 = mjtiles.convStringToTiles("111b")
+        const set1 = new mjset.Set(tiles1, true)
+        const tiles2 = mjtiles.convStringToTiles("222c")
+        const set2 = new mjset.Set(tiles2, true)
+        expect(set1.matches(set2)).to.be.false
+        expect(set2.matches(set1)).to.be.false
     })
 
     it("doesn't match triplets of different suits", function() {
@@ -98,6 +116,15 @@ describe("Test mjset", function() {
         expect(set2.matches(set1)).to.be.true
     })
 
+    it("doesn't match triplets and pairs", function() {
+        const tiles1 = mjtiles.convStringToTiles("11b")
+        const set1 = new mjset.Set(tiles1, true)
+        const tiles2 = mjtiles.convStringToTiles("111b")
+        const set2 = new mjset.Set(tiles2, true)
+        expect(set1.matches(set2)).to.be.false
+        expect(set2.matches(set1)).to.be.false
+    })
+
     it("can bump runs", function() {
         const tiles1 = mjtiles.convStringToTiles("123b")
         const set1 = new mjset.Set(tiles1, true)
@@ -116,5 +143,77 @@ describe("Test mjset", function() {
         const bumped = set1.bump(1)
         expect(bumped.matches(set2)).to.be.true
         expect(set2.matches(bumped)).to.be.true
+    })
+
+    it("can match small-or-big triplets with triplets", function() {
+        const tiles1 = mjtiles.convStringToTiles("111b")
+        const set1 = new mjset.Set(tiles1, true)
+        const tiles2 = mjtiles.convStringToTiles("111b")
+        const set2 = new mjset.Set(tiles2, true)
+        expect(set1.matchSmallOrBig(set2)).to.be.true
+        expect(set2.matchSmallOrBig(set1)).to.be.true
+    })
+
+    it("doesn't match small-or-big triplets with different ranks", function() {
+        const tiles1 = mjtiles.convStringToTiles("111b")
+        const set1 = new mjset.Set(tiles1, true)
+        const tiles2 = mjtiles.convStringToTiles("222b")
+        const set2 = new mjset.Set(tiles2, true)
+        expect(set1.matchSmallOrBig(set2)).to.be.false
+        expect(set2.matchSmallOrBig(set1)).to.be.false
+    })
+
+    it("doesn't match small-or-big triplets with different suits", function() {
+        const tiles1 = mjtiles.convStringToTiles("111b")
+        const set1 = new mjset.Set(tiles1, true)
+        const tiles2 = mjtiles.convStringToTiles("111c")
+        const set2 = new mjset.Set(tiles2, true)
+        expect(set1.matchSmallOrBig(set2)).to.be.false
+        expect(set2.matchSmallOrBig(set1)).to.be.false
+    })
+
+    it("can match small-or-big pairs with triplets", function() {
+        const tiles1 = mjtiles.convStringToTiles("11b")
+        const set1 = new mjset.Set(tiles1, true)
+        const tiles2 = mjtiles.convStringToTiles("111b")
+        const set2 = new mjset.Set(tiles2, true)
+        expect(set1.matchSmallOrBig(set2)).to.be.true
+        expect(set2.matchSmallOrBig(set1)).to.be.true
+    })
+
+    it("doesn't match small-or-big pairs and triplets with different ranks", function() {
+        const tiles1 = mjtiles.convStringToTiles("11b")
+        const set1 = new mjset.Set(tiles1, true)
+        const tiles2 = mjtiles.convStringToTiles("222b")
+        const set2 = new mjset.Set(tiles2, true)
+        expect(set1.matchSmallOrBig(set2)).to.be.false
+        expect(set2.matchSmallOrBig(set1)).to.be.false
+    })
+
+    it("doesn't match small-or-big pairs and triplets with different suits", function() {
+        const tiles1 = mjtiles.convStringToTiles("11b")
+        const set1 = new mjset.Set(tiles1, true)
+        const tiles2 = mjtiles.convStringToTiles("111c")
+        const set2 = new mjset.Set(tiles2, true)
+        expect(set1.matchSmallOrBig(set2)).to.be.false
+        expect(set2.matchSmallOrBig(set1)).to.be.false
+    })
+
+    it("doesn't match small-or-big pairs triplets with runs", function() {
+        const tiles1 = mjtiles.convStringToTiles("111b")
+        const set1 = new mjset.Set(tiles1, true)
+        const tiles2 = mjtiles.convStringToTiles("123c")
+        const set2 = new mjset.Set(tiles2, true)
+        expect(set1.matchSmallOrBig(set2)).to.be.false
+        expect(set2.matchSmallOrBig(set1)).to.be.false
+    })
+
+    it("doesn't match small-or-big pairs pairs with runs", function() {
+        const tiles1 = mjtiles.convStringToTiles("11b")
+        const set1 = new mjset.Set(tiles1, true)
+        const tiles2 = mjtiles.convStringToTiles("123c")
+        const set2 = new mjset.Set(tiles2, true)
+        expect(set1.matchSmallOrBig(set2)).to.be.false
+        expect(set2.matchSmallOrBig(set1)).to.be.false
     })
 })

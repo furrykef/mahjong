@@ -298,6 +298,8 @@ function detectSimilarSets(sets: mjset.Set[]) {
             const dots = set.changeSuit(mjtiles.Suit.DOTS)
             if (sets.some((x) => x.matches(cracks)) && sets.some((x) => x.matches(dots))) {
                 yaku_list.push(set.isTriplet ? YakuType.THREE_SIMILAR_TRIPLETS : YakuType.THREE_SIMILAR_SEQUENCES)
+            } else if (sets.some((x) => x.matchSmallOrBig(cracks)) && sets.some((x) => x.matchSmallOrBig(dots))) {
+                yaku_list.push(YakuType.SMALL_THREE_SIMILAR_TRIPLETS)
             }
         }
 

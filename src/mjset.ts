@@ -38,11 +38,20 @@ export class Set {
     }
 
     // Two sets match if:
-    //  * They are both the same run in the same suit
+    //  * They are both the same run in the same suit, OR
     //  * They are both the same triplet in the same suit,
     //      even if one is a kong and the other is not
     matches(other: Set) {
         return _.isEqual(this.tiles.slice(0, 3), other.tiles.slice(0, 3))
+    }
+
+    // Two sets match in this sense if they are both triplets or pairs
+    // and they are the same rank and suit
+    // Can be used to detect e.g. Small Three Similar Triplets
+    matchSmallOrBig(other: Set) {
+        return ((this.isPair || this.isTriplet)
+                && (other.isPair || other.isTriplet)
+                && _.isEqual(this.tiles[0], other.tiles[0]))
     }
 
     bump(amount: number) {
