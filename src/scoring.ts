@@ -70,7 +70,7 @@ const ORPHANS_PATTERN = mjtiles.sorted(mjtiles.convStringToTiles("19b 19c 19d ES
 export function scoreHand(hand: mjtiles.Tile[]) {
     hand = mjtiles.sorted(hand)
     if (_.isEqual(_.uniqWith(hand, _.isEqual), ORPHANS_PATTERN)) {
-        return [YakuType.THIRTEEN_TERMINALS, YakuType.CONCEALED_HAND]
+        return [YakuType.THIRTEEN_TERMINALS]
     }
     return scoreHandImpl(hand, [])
 }
@@ -157,6 +157,7 @@ function scoreHandImpl(tiles: mjtiles.Tile[], sets: mjset.Set[]): Yaku[] | null 
 
 
 function scoreSets(sets: mjset.Set[]) {
+    // @TODO@: handle Concealed Hand intelligently
     let yaku_list = [YakuType.CONCEALED_HAND]
 
     let num_triplets = 0
@@ -225,6 +226,8 @@ function scoreSets(sets: mjset.Set[]) {
         }
         yaku_list = yaku_list.concat(detectSimilarSets(sets))
     } else if (num_pairs === 7) {
+        // Concealed Hand not applicable to Seven Pairs
+        yaku_list = yaku_list.filter((yaku) => yaku !== YakuType.CONCEALED_HAND)
         yaku_list.push(YakuType.SEVEN_PAIRS)
     } else {
         // Incomplete hand

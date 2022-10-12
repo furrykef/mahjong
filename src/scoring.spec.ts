@@ -89,14 +89,14 @@ describe("Test scoring", function() {
                      YT.MIXED_ONE_SUIT]))
         it("detects 2.1 Mixed One-Suit (seven-pair)",
            testYaku("112244556677b HH",
-                    [YT.CONCEALED_HAND, YT.SEVEN_PAIRS, YT.MIXED_ONE_SUIT]))
+                    [YT.SEVEN_PAIRS, YT.MIXED_ONE_SUIT]))
 
         it("detects 2.2 Pure One-Suit (regular)",
            testYaku("11133355578999b",
                     [YT.CONCEALED_HAND, YT.PURE_ONE_SUIT]))
         it("detects 2.2 Pure One-Suit (seven-pair)",
            testYaku("11224455667799b",
-                    [YT.CONCEALED_HAND, YT.SEVEN_PAIRS, YT.PURE_ONE_SUIT]))
+                    [YT.SEVEN_PAIRS, YT.PURE_ONE_SUIT]))
     })
 
 
@@ -243,8 +243,7 @@ describe("Test scoring", function() {
                      YT.MIXED_GREATER_TERMINALS]))
         it("detects 8.1.3 Mixed Greater Terminals (seven-pair)",
            testYaku("1199b 1199c HH GG RR",
-                    [YT.CONCEALED_HAND,
-                     YT.SEVEN_PAIRS,
+                    [YT.SEVEN_PAIRS,
                      YT.MIXED_GREATER_TERMINALS]))
 
         it("detects 8.1.4 Pure Greater Terminals (regular)",
@@ -259,13 +258,13 @@ describe("Test scoring", function() {
     describe("10.0 Irregular Hands", function() {
         it("detects 10.1 Thirteen Terminals",
            testYaku("19b 19c 19d ESWN HGRR",
-                    [YT.CONCEALED_HAND, YT.THIRTEEN_TERMINALS]))
+                    [YT.THIRTEEN_TERMINALS]))
 
         it("detects 10.2 Seven Pairs",
            testYaku("11b 33b 55b 77b 99b 11c 33c",
-                    [YT.CONCEALED_HAND, YT.SEVEN_PAIRS]))
+                    [YT.SEVEN_PAIRS]))
         it("detects 10.2 Seven Pairs (four of a kind)",
            testYaku("11b 33b 55b 77b 99b 1111c",
-                    [YT.CONCEALED_HAND, YT.SEVEN_PAIRS]))
+                    [YT.SEVEN_PAIRS]))
     })
 })
